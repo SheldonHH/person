@@ -14,4 +14,28 @@ public class UiandProof {
         this.ui = ui;
         this.serverProof = serverProof;
     }
+
+    public UUID getUserid() {
+        return userid;
+    }
+
+    public void setUserid(UUID userid) {
+        this.userid = userid;
+    }
+
+    public long[] getUi() {
+        return ui;
+    }
+
+    public void setUi(long[] ui) {
+        this.ui = ui;
+    }
+
+    public UserVector2.L2NormBoundProof2 getServerProof() {
+        return serverProof;
+    }
+
+    public void setServerProof(UserVector2.L2NormBoundProof2 serverProof) {
+        this.serverProof = serverProof;
+    }
 }

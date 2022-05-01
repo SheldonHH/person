@@ -7,4 +7,5 @@ public class GaussianUnitTuple {
         this.x = x;
         this.y = y;
     }
+
 }

@@ -14,4 +14,28 @@ public class ViandProof {
         this.vi = vi;
         this.peerProof = peerProof;
     }
+
+    public UUID getUserid() {
+        return userid;
+    }
+
+    public void setUserid(UUID userid) {
+        this.userid = userid;
+    }
+
+    public long[] getVi() {
+        return vi;
+    }
+
+    public void setVi(long[] vi) {
+        this.vi = vi;
+    }
+
+    public UserVector2.L2NormBoundProof2 getPeerProof() {
+        return peerProof;
+    }
+
+    public void setPeerProof(UserVector2.L2NormBoundProof2 peerProof) {
+        this.peerProof = peerProof;
+    }
 }

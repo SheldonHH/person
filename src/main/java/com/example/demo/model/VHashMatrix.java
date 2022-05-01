@@ -12,4 +12,28 @@ public class VHashMatrix {
         this.vi = vi;
         this.rowColHash = rowColHash;
     }
+
+    public UUID getUserid() {
+        return userid;
+    }
+
+    public void setUserid(UUID userid) {
+        this.userid = userid;
+    }
+
+    public long[][] getVi() {
+        return vi;
+    }
+
+    public void setVi(long[][] vi) {
+        this.vi = vi;
+    }
+
+    public RowColHash getRowColHash() {
+        return rowColHash;
+    }
+
+    public void setRowColHash(RowColHash rowColHash) {
+        this.rowColHash = rowColHash;
+    }
 }
