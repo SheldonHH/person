@@ -55,6 +55,7 @@ import com.example.demo.p4p.server.P4PServer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -302,6 +303,7 @@ public class P4PSim extends P4PParameters {
 
 
                         ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
                         StringEntity json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
 //
                         request.setEntity(json);

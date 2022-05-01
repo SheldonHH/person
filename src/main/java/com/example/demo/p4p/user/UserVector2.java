@@ -75,8 +75,8 @@ import com.example.demo.p4p.crypto.Commitment;
 
 public class UserVector2 extends UserVector implements Serializable{
     private static final long serialVersionUID = 6529685098267757690L;
-    private NativeBigInteger g = null;
-    private NativeBigInteger h = null;
+    static private NativeBigInteger g = null;
+    static private NativeBigInteger h = null;
     //private SquareCommitment sc = null;
 
     public UserVector2(){
@@ -119,8 +119,8 @@ public class UserVector2 extends UserVector implements Serializable{
             m = data.length;
     }
 
-    private long [] u = null;       // Server's share of user vector
-    private long [] v = null;       // Privacy peer's share of user vector
+    static private long [] u = null;       // Server's share of user vector
+    static private long [] v = null;       // Privacy peer's share of user vector
 
     /**
      * Generates the shares of the user vector.
@@ -274,8 +274,8 @@ public class UserVector2 extends UserVector implements Serializable{
      * the server who will do all the verification. It is possible to change
      * this so that the privacy peer shares more work.
      */
-
-    public class L2NormBoundProof2 extends Proof implements Serializable {
+//    https://stackoverflow.com/questions/15331846/non-static-variable-this-cannot-be-referenced-from-a-static-context-when-creat
+    public static class L2NormBoundProof2 extends Proof implements Serializable {
 
         private static final long serialVersionUID = 6529685098267757690L;
         private long[] checksums = null;
@@ -292,9 +292,9 @@ public class UserVector2 extends UserVector implements Serializable{
         // The square proofs
         private BitCommitment.BitCommitmentProof[] bcProofs = null;
         // The bit proof for the sum of the squares
-        private boolean forServer = false;
-        private L2NormBoundProof2 serverProof = null;
-        private L2NormBoundProof2 peerProof = null;
+        static private boolean forServer = false;
+        static private L2NormBoundProof2 serverProof = new L2NormBoundProof2(true);
+        static private L2NormBoundProof2 peerProof = new L2NormBoundProof2(false);
         private int ssBL = 0;
 
 
@@ -325,8 +325,8 @@ public class UserVector2 extends UserVector implements Serializable{
                 throw new RuntimeException("Checksum vector not set or shares"
                         + " not generated yet.");
 
-            serverProof = new L2NormBoundProof2(true);
-            peerProof = new L2NormBoundProof2(false);
+//            serverProof = new L2NormBoundProof2(true);
+//            peerProof =  new L2NormBoundProof2(false);
 
             /** For the server: */
             serverProof.checksums = new long[c.length];

@@ -73,15 +73,15 @@ public class UserVector extends P4PParameters {
     protected long[] data = null;   // The user data
     protected int m = -1;          // The dimension of user vector
 
-    protected long F = -1;
+    static protected long F = -1;
     // The order of the (small) finite field over which all the
     // computations are carried out. It should be a prime of
     // appropriate length (e.g. the length of a long).
 
-    protected int[][] c = null;    // The checksum coefficient vectors.
+    static protected int[][] c = null;    // The checksum coefficient vectors.
 
     protected long L = -1;
-    protected int l;
+    static protected int l;
 
     /**
      */
