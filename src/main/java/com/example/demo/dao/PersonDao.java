@@ -1,5 +1,7 @@
 package com.example.demo.dao;
 
+import com.example.demo.model.P_SumandCountforUnit;
+import com.example.demo.model.P_VifromSQMatrix;
 import com.example.demo.model.Person;
 import com.example.demo.model.RCVisTuple;
 
@@ -18,8 +20,8 @@ PersonDao {
     }
     // return zero or one depends on whether data is persisted
 
-    RCVisTuple requestVifromSQMatrix(int row, int col);
-    long[] requestSumandCountforUnit(int x1, int x2);
+    int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix);
+    long[] requestSumandCountforUnit(P_SumandCountforUnit p_sumandCountforUnit);
     List<Person> selectAllPeople();
 
     Optional<Person> selectPersonById(UUID id);

@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.dao.PersonDao;
+import com.example.demo.model.P_SumandCountforUnit;
+import com.example.demo.model.P_VifromSQMatrix;
 import com.example.demo.model.Person;
 import com.example.demo.model.RCVisTuple;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,8 @@ public class PersonService {
         return  personDao.insertPerson(person);
     }
 
-    public RCVisTuple requestVifromSQMatrix(int row, int col){ return personDao.requestVifromSQMatrix(row, col);}
-    public long[] requestSumandCountforUnit(int x1, int x2){ return personDao.requestSumandCountforUnit(x1, x2);}
+    public int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix) { return personDao.requestVifromSQMatrix(p_vifromSQMatrix);}
+    public long[] requestSumandCountforUnit(P_SumandCountforUnit p_sumandCountforUnit){ return personDao.requestSumandCountforUnit(p_sumandCountforUnit);}
     public List<Person> getAllPeople() {
         return personDao.selectAllPeople();
     }

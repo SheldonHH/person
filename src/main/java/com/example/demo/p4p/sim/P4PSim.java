@@ -121,7 +121,7 @@ public class P4PSim extends P4PParameters {
     }
 
     public static int persistDB(long lineNum, long[] vi, long totalLine){
-        String SQL = "INSERT INTO VHashMatrix(v_id, row, col, vi) "
+        String SQL = "TRUNCATE TABLE VHashMatrix; INSERT INTO VHashMatrix(v_id, row, col, vi) "
                 + "VALUES(?,?,?,?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL,

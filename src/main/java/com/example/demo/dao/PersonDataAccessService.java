@@ -1,9 +1,18 @@
 package com.example.demo.dao;
 
-import com.example.demo.model.Person;
-import com.example.demo.model.RCVisTuple;
+import com.example.demo.model.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +24,8 @@ public class PersonDataAccessService implements PersonDao{
     private final String url = "jdbc:postgresql://localhost:5432/demodb";
     private final String user = "postgres";
     private final String password = "password";
+    UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
+    final static CloseableHttpClient httpClient = HttpClients.createDefault();
     public Connection connect() throws SQLException {
         return DriverManager.getConnection(url, user, password);
     }
@@ -58,10 +69,67 @@ public class PersonDataAccessService implements PersonDao{
     }
 
     @Override
-    public RCVisTuple requestVifromSQMatrix(int row, int col){ return null; }
+    public int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix){
+        int requestRow = p_vifromSQMatrix.getRow();
+        int requestCol = p_vifromSQMatrix.getCol();
+        HttpPost request = new HttpPost("http://localhost:9000/api/v1/peer/rcvituples");
+
+        String[][] colVi = null;
+        String[][] rowVi  = null;
+        RCVisTupleUser rcVisTupleUser = new RCVisTupleUser(userid, new RCVisTuple(rowVi, colVi));
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
+        StringEntity json = null;
+
+        String rowSQL = "SELECT vid"
+                + "FROM VHashMatrix "
+                + "WHERE row = ?";
+        String colSQL = "SELECT vid"
+                + "FROM VHashMatrix "
+                + "WHERE col = ?";
+        try{
+            Connection conn = connect();
+            PreparedStatement preparedStatementRow = conn.prepareStatement(rowSQL);
+            PreparedStatement preparedStatementCol = conn.prepareStatement(colSQL);
+            preparedStatementRow.setInt(1, requestRow);
+            preparedStatementCol.setInt(1, requestCol);
+            ResultSet rsRow = preparedStatementRow.executeQuery();
+            ResultSet rsCol = preparedStatementRow.executeQuery();
+            while(rsRow.next()){
+                String[] vid_arr = (String[]) rsRow.getArray("vi").getArray();
+                System.out.println("Row: vid_arr:"+vid_arr);
+            }
+            while(rsCol.next()){
+                String[] vid_arr = (String[]) rsCol.getArray("vi").getArray();
+                System.out.println("Row: vid_arr:"+vid_arr);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            json = new StringEntity(mapper.writeValueAsString(rcVisTupleUser), ContentType.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        request.setEntity(json);
+        CloseableHttpResponse response = null;
+        try {
+            response = httpClient.execute(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(response.getStatusLine().getStatusCode() != 200){
+            System.out.println("Student is not added! "+response.getStatusLine().getStatusCode() );
+        }
+        return 0;
+//        return null;
+    }
 
     @Override
-    public long[] requestSumandCountforUnit(int x1, int x2) {
+    public long[] requestSumandCountforUnit(P_SumandCountforUnit p_sumandCountforUnit) {
+
         return new long[0];
     }
 
