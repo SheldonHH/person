@@ -1,4 +1,4 @@
-```
+``````
 create user client1 with encrypted password '1';
 create user client2 with encrypted password '2';
 create user client3 with encrypted password '3';
@@ -23,6 +23,14 @@ CREATE DATABASE client3 WITH ENCODING = 'UTF8' OWNER = client3;
 CREATE ROLE client4;
 CREATE DATABASE client4 WITH ENCODING = 'UTF8' OWNER = client4;
 
+\c client1
+CREATE TABLE VHashMatrix (
+    v_id serial PRIMARY KEY,
+    row integer,
+    col integer,
+    vi TEXT[]
+);
+    
 
 ALTER ROLE "client1" WITH LOGIN;
 
@@ -132,3 +140,4 @@ SELECT * FROM schema.tables WHERE table_schema = 'singapore';
 
 
 
+```

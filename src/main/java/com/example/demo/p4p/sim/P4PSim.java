@@ -33,13 +33,13 @@ package com.example.demo.p4p.sim;
 
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner; // Import the Scanner class to read text files
@@ -80,6 +80,12 @@ import org.apache.http.util.EntityUtils;
  */
 
 public class P4PSim extends P4PParameters {
+    private final static String url = "jdbc:postgresql://localhost:5432/client1";
+    private final static String user = "client1";
+    private final static String password = "password";
+    public static Connection connect() throws SQLException {
+        return DriverManager.getConnection(url, user, password);
+    }
     private static NativeBigInteger g = new NativeBigInteger("3182089256208329047054709904358973599639052582169128376753217579641056697166499158386824120768854848163132851742558842187976312344846648732546791352223868");
     private static NativeBigInteger h = new NativeBigInteger("9793143674503176705343368747667288665355699962542491643750752248068073537700661368128860976203407269976279596607505206660360515029147205303637405777467078");
 
@@ -95,8 +101,6 @@ public class P4PSim extends P4PParameters {
     public static ArrayList<Integer> listofV(String RorC, int num_index, double israel){
         ArrayList<Integer> list = new ArrayList<>();
         int squareWidth = (int)Math.ceil(Math.sqrt(israel));
-
-
         if(RorC.equals("col")){
             for(int i = 0; i< israel; i++){
                 if(i % (int)Math.ceil(Math.sqrt(israel)) == num_index){
@@ -110,6 +114,45 @@ public class P4PSim extends P4PParameters {
             list = (ArrayList<Integer>) Arrays.stream(matrix[num_index]).boxed().collect(Collectors.toList());
         }
         return list;
+    }
+
+    public static int sqWidth(double israel){
+        return (int)Math.ceil(Math.sqrt(israel));
+    }
+
+    public static int persistDB(long lineNum, long[] vi, long totalLine){
+        String SQL = "INSERT INTO VHashMatrix(v_id, row, col, vi) "
+                + "VALUES(?,?,?,?)";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL,
+                     Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setObject (1, UUID.randomUUID());
+            pstmt.setString(2, ""+lineNum/sqWidth(totalLine));
+            pstmt.setString(3, ""+lineNum%sqWidth(totalLine));
+            String[] strArray = Arrays.stream(vi)
+                    .mapToObj(String::valueOf)
+                    .toArray(String[]::new);
+            Array sg = conn.createArrayOf("TEXT", strArray);
+            pstmt.setArray (4, sg);
+            int affectedRows = pstmt.executeUpdate();
+            // check the affected rows
+            if (affectedRows > 0) {
+                // get the ID back
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    System.out.println(rs);
+//                    if (rs.next()) {
+////                        id = rs.getLong(1);
+//                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
     }
     public static int[][] printMatrix(double israel){
         int sqWidth = (int)Math.ceil(Math.sqrt(israel));
@@ -130,10 +173,10 @@ public class P4PSim extends P4PParameters {
         return matrixToReturn;
     }
     public static void main(String[] args) {
-        double israel = 70;
-        printMatrix(israel);
-//        System.out.println((int)Math.ceil(Math.sqrt(israel)));
-        System.out.println(listofV("row", 1, israel));
+//        double israel = 70;
+//        printMatrix(israel);
+////        System.out.println((int)Math.ceil(Math.sqrt(israel)));
+//        System.out.println(listofV("row", 1, israel));
 
 
         UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
@@ -234,6 +277,7 @@ public class P4PSim extends P4PParameters {
             File myObj = new File(fileName);
             Path path = Paths.get(fileName);
             long dataLineNum = 0;
+            System.out.println("sqWidth:"+sqWidth(dataLineNum));
             try {
                 dataLineNum = Files.lines(path).count();
             } catch (IOException e) {
@@ -241,6 +285,7 @@ public class P4PSim extends P4PParameters {
             }
             System.out.println("dataLineNum: " + dataLineNum);
             Scanner myReader = new Scanner(myObj);
+            long lineNum = 0;
             while (myReader.hasNextLine()) {
                 String strdata = myReader.nextLine();
                 m = strdata.length();
@@ -383,26 +428,27 @@ public class P4PSim extends P4PParameters {
 
 //  3️⃣. The peer:
                         long[] vv = uv.getV();
+                        persistDB(lineNum, vv , dataLineNum);
 //  3️⃣.1 The peer: setV(); // 🌛 UserVector2(m, F, l, g, h)
                         UserVector2 pv = new UserVector2(m, F, l, g, h);
                         pv.setV(vv);
 
 // 3.2 set CheCoVectors through server.ChallVector for Each User 🐢
                         pv.setChecksumCoefficientVectors(server.getChallengeVectors());
-                        verifierWatch.start();
-
-// 3.2 setChecksumCoefficientVectors through server Challenge_Vector for Each User
-                        boolean peerPassed = pv.verify2(peerProof); // 🌟 verify2 🌟
-                        verifierWatch.pause();
-
-
-// 4️⃣ !peerPassed  disqualifyUser(i),
-// server.setY():  commitments to the peer's share of the checksums, and forward to server
-// verify the proof,  // peerVerification returns true
-                        if (!peerPassed)
-                            server.disqualifyUser(i);
-                        else
-                            server.setY(i, pv.getY());
+//                        verifierWatch.start();
+//
+//// 3.2 setChecksumCoefficientVectors through server Challenge_Vector for Each User
+//                        boolean peerPassed = pv.verify2(peerProof); // 🌟 verify2 🌟
+//                        verifierWatch.pause();
+//
+//
+//// 4️⃣ !peerPassed  disqualifyUser(i),
+//// server.setY():  commitments to the peer's share of the checksums, and forward to server
+//// verify the proof,  // peerVerification returns true
+//                        if (!peerPassed)
+//                            server.disqualifyUser(i);
+//                        else
+//                            server.setY(i, pv.getY());
                         /**
                          * Note that peer's verification simply computes some
                          * commitments the peer's shares of the checksums (i.e. the
@@ -414,64 +460,65 @@ public class P4PSim extends P4PParameters {
                          */
 
                         // 5️⃣ l2 < L = shouldPass
-                        shouldPass = l2 < L;   // Correct shouldPass using actual data.
-                        shouldPass = true;
-                        if (shouldPass) {
-                            nQulaifiedUsers++;
-                            Util.vectorAdd(s, data, s, F);
-                            Util.vectorAdd(v, vv, v, F);
-                        }
+//                        shouldPass = l2 < L;   // Correct shouldPass using actual data.
+//                        shouldPass = true;
+//                        if (shouldPass) {
+//                            nQulaifiedUsers++;
+//                            Util.vectorAdd(s, data, s, F);
+//                            Util.vectorAdd(v, vv, v, F);
+//                        }
                     }
 
 // 6️⃣ server prepare to verify
 // server.setPeerSum()
 // server.compute()
-                    peer.setPeerSum(v);
-                    verifierWatch.start();
-                    server.compute(peer);          // 🌟 serverVerify 🐢🌟
-                    verifierWatch.pause();
-
-// 7️⃣ VectorSum()
-                    long[] result = server.getVectorSum();
-                    for (int ii = 0; ii < m; ii++) {
-// 7.1 res[ii] != Util.mod(s[ii], F)
-                        if (result[ii] != Util.mod(s[ii], F)) {
-                            System.out.println("\tElement " + ii
-                                    + " don't agree. Computed: "
-                                    + result[ii] + ", should be "
-                                    + Util.mod(s[ii], F));
-                            passed = false;
-                            nfails++;
-                            break;
-                        }
-                    }
-                    if (passed)
-                        System.out.println("Test " + kk + " passed. Number of qualified users "
-                                + " should be " + nQulaifiedUsers + ". Server reported "
-                                + server.getNQulaifiedUsers());
-                    else
-                        System.out.println("Test " + kk + " failed. Number of qualified users should be "
-                                + nQulaifiedUsers + ". Server reported "
-                                + server.getNQulaifiedUsers());
-
+//                    peer.setPeerSum(v);
+//                    verifierWatch.start();
+//                    server.compute(peer);          // 🌟 serverVerify 🐢🌟
+//                    verifierWatch.pause();
+//
+//// 7️⃣ VectorSum()
+//                    long[] result = server.getVectorSum();
+//                    for (int ii = 0; ii < m; ii++) {
+//// 7.1 res[ii] != Util.mod(s[ii], F)
+//                        if (result[ii] != Util.mod(s[ii], F)) {
+//                            System.out.println("\tElement " + ii
+//                                    + " don't agree. Computed: "
+//                                    + result[ii] + ", should be "
+//                                    + Util.mod(s[ii], F));
+//                            passed = false;
+//                            nfails++;
+//                            break;
+//                        }
+//                    }
+//                    if (passed)
+//                        System.out.println("Test " + kk + " passed. Number of qualified users "
+//                                + " should be " + nQulaifiedUsers + ". Server reported "
+//                                + server.getNQulaifiedUsers());
+//                    else
+//                        System.out.println("Test " + kk + " failed. Number of qualified users should be "
+//                                + nQulaifiedUsers + ". Server reported "
+//                                + server.getNQulaifiedUsers());
+//
                 }
-
-                verifierWatch.stop();
-                proverWatch.stop();
-                long end = System.currentTimeMillis();
-
-                System.out.println("Total tests run: " + nLoops + ". Failed: " + nfails);
-                System.out.println("\n  Prover time            Verifier time           Total");
-                System.out.println("============================================================");
-                System.out.println("    " + (double) proverWatch.getElapsedTime() / nLoops
-                        + "                 "
-                        + (double) verifierWatch.getElapsedTime() / nLoops
-                        + "              "
-                        + ((double) (proverWatch.getElapsedTime()
-                        + verifierWatch.getElapsedTime())) / nLoops);
-                System.out.println("Note that the time is for all " + n + " users in ms.");
-                System.out.println("Also note that the prover needs to compute proofs"
-                        + " for both the server and the privacy peer.");
+//
+//                verifierWatch.stop();
+//                proverWatch.stop();
+//                long end = System.currentTimeMillis();
+//
+//                System.out.println("Total tests run: " + nLoops + ". Failed: " + nfails);
+//                System.out.println("\n  Prover time            Verifier time           Total");
+//                System.out.println("============================================================");
+//                System.out.println("    " + (double) proverWatch.getElapsedTime() / nLoops
+//                        + "                 "
+//                        + (double) verifierWatch.getElapsedTime() / nLoops
+//                        + "              "
+//                        + ((double) (proverWatch.getElapsedTime()
+//                        + verifierWatch.getElapsedTime())) / nLoops);
+//                System.out.println("Note that the time is for all " + n + " users in ms.");
+//                System.out.println("Also note that the prover needs to compute proofs"
+//                        + " for both the server and the privacy peer.");
+                lineNum++;
             }
             myReader.close();
 
