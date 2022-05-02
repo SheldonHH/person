@@ -308,22 +308,22 @@ public class P4PSim extends P4PParameters {
 // UserVector2(data, F, l, g, h)
 // 2️⃣. Shares: u, v
                         uv.generateShares();
-                        try {
-                            Socket socketConnection = new Socket("127.0.0.1", 8800);
-                            DataOutputStream outToServer = new DataOutputStream(socketConnection.getOutputStream());
-                            System.out.println(uv.getU());
-
-
-
-                            outToServer.writeUTF(Arrays.toString(uv.getV()));
-
-                            Socket socketConnection_peer = new Socket("127.0.0.1", 8801);
-                            DataOutputStream outToSpeer = new DataOutputStream(socketConnection_peer.getOutputStream());
-                            System.out.println(uv.getV());
-                            outToSpeer.writeUTF(Arrays.toString(uv.getV()));
-                        } catch (Exception e) {
-                            System.out.println(e);
-                        }
+//                        try {
+//                            Socket socketConnection = new Socket("127.0.0.1", 8800);
+//                            DataOutputStream outToServer = new DataOutputStream(socketConnection.getOutputStream());
+//                            System.out.println(uv.getU());
+//
+//
+//
+//                            outToServer.writeUTF(Arrays.toString(uv.getV()));
+//
+//                            Socket socketConnection_peer = new Socket("127.0.0.1", 8801);
+//                            DataOutputStream outToSpeer = new DataOutputStream(socketConnection_peer.getOutputStream());
+//                            System.out.println(uv.getV());
+//                            outToSpeer.writeUTF(Arrays.toString(uv.getV()));
+//                        } catch (Exception e) {
+//                            System.out.println(e);
+//                        }
 
 
 // 2.1 Set checkCoVector through server challenge_vector for each user 🐢
@@ -359,26 +359,40 @@ public class P4PSim extends P4PParameters {
 //                        Gson gson = new Gson();
 //                        String json_serverProof = gson.toJson(serverProof);
                         server.setProof(i, serverProof);
-
-                        HttpPost request_uiProof = new HttpPost("http://localhost:8080/api/v1/server/uiandproof");
-                        HttpPost request_viProof = new HttpPost("http://localhost:9001/api/v1/server/viandproof");
+                        HttpPost request = new HttpPost("http://localhost:8080/api/v1/server/uiandproof");
                         UiandProof uiandProof = new UiandProof(userid, uv.getU(),serverProof);
-                        ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof);
+
 
                         ObjectMapper mapper = new ObjectMapper();
                         mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
-                        StringEntity ui_json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
-                        StringEntity vi_json = new StringEntity(mapper.writeValueAsString(viandProof), ContentType.APPLICATION_JSON);
+                        StringEntity json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
 //
-                        request_uiProof.setEntity(ui_json);
-                        request_uiProof.setEntity(vi_json);
+                        request.setEntity(json);
 
-                        CloseableHttpResponse response_uiProof = httpClient.execute(request_uiProof);
+                        CloseableHttpResponse response = httpClient.execute(request);
+
+                        if(response.getStatusLine().getStatusCode() != 200){
+                            System.out.println("Student is not added! "+response.getStatusLine().getStatusCode() );
+                        }
+//                        HttpPost request_uiProof = new HttpPost("http://localhost:8080/api/v1/server/uiandproof");
+                        HttpPost request_viProof = new HttpPost("http://localhost:9001/api/v1/peer/viandproof");
+//                        UiandProof uiandProof = new UiandProof(userid, uv.getU(),serverProof);
+                        ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof);
+//
+//                        ObjectMapper mapper = new ObjectMapper();
+//                        mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
+//                        StringEntity ui_json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
+                        StringEntity vi_json = new StringEntity(mapper.writeValueAsString(viandProof), ContentType.APPLICATION_JSON);
+////
+//                        request_uiProof.setEntity(ui_json);
+                        request_viProof.setEntity(vi_json);
+//
+//                        CloseableHttpResponse response_uiProof = httpClient.execute(request_uiProof);
                         CloseableHttpResponse response_viProof = httpClient.execute(request_viProof);
 
-                        if(response_uiProof.getStatusLine().getStatusCode() != 200){
-                            System.out.println("uiProof is not sent! "+response_uiProof.getStatusLine().getStatusCode() );
-                        }
+//                        if(response_uiProof.getStatusLine().getStatusCode() != 200){
+//                            System.out.println("uiProof is not sent! "+response_uiProof.getStatusLine().getStatusCode() );
+//                        }
                         if(response_viProof.getStatusLine().getStatusCode() != 200){
                             System.out.println("viProof is not sent! "+response_viProof.getStatusLine().getStatusCode() );
                         }
