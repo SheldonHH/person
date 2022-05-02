@@ -70,6 +70,7 @@ public class PersonDataAccessService implements PersonDao{
 
     @Override
     public int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix){
+        System.out.println("P_VifromSQMatrix: "+p_vifromSQMatrix);
         int requestRow = p_vifromSQMatrix.getRow();
         int requestCol = p_vifromSQMatrix.getCol();
         HttpPost request = new HttpPost("http://localhost:9000/api/v1/peer/rcvituples");
@@ -82,10 +83,10 @@ public class PersonDataAccessService implements PersonDao{
         mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
         StringEntity json = null;
 
-        String rowSQL = "SELECT vid"
+        String rowSQL = "SELECT vid "
                 + "FROM VHashMatrix "
                 + "WHERE row = ?";
-        String colSQL = "SELECT vid"
+        String colSQL = "SELECT vid "
                 + "FROM VHashMatrix "
                 + "WHERE col = ?";
         try{

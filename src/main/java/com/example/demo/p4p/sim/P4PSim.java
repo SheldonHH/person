@@ -46,6 +46,7 @@ import java.util.Scanner; // Import the Scanner class to read text files
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.example.demo.model.PersonCount;
 import com.example.demo.model.UiandProof;
 import com.example.demo.model.ViandProof;
 import com.example.demo.p4p.user.UserVector2;
@@ -270,7 +271,7 @@ public class P4PSim extends P4PParameters {
         System.out.println("l = " + l + ", L = " + L);
         System.out.println("F = " + F);
         System.out.println("zkpIterations = " + zkpIterations);
-
+        int num_of_element = 12;
         // Generate the data and the checksum coefficient vector:
         try {
             String fileName = "/Users/mac/Desktop/FedBFT/voting/output.txt";
@@ -280,6 +281,7 @@ public class P4PSim extends P4PParameters {
             System.out.println("sqWidth:"+sqWidth(dataLineNum));
             try {
                 dataLineNum = Files.lines(path).count();
+                num_of_element = Math.toIntExact(dataLineNum);
             } catch (IOException e) {
                 System.out.println("error of read line");
             }
@@ -522,6 +524,16 @@ public class P4PSim extends P4PParameters {
             }
             myReader.close();
 
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
+            HttpPost request_finishVi = new HttpPost("http://localhost:9001/api/v1/peer/finishvi");
+            StringEntity finishVi_json = null;
+            finishVi_json = new StringEntity(mapper.writeValueAsString(new PersonCount(num_of_element, userid)), ContentType.APPLICATION_JSON);
+            request_finishVi.setEntity(finishVi_json);
+            CloseableHttpResponse response_finishVi = httpClient.execute(request_finishVi);
+            if(response_finishVi.getStatusLine().getStatusCode() != 200){
+                System.out.println("finishVi is not sent! "+response_finishVi.getStatusLine().getStatusCode() );
+            }
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -533,5 +545,20 @@ public class P4PSim extends P4PParameters {
             e.printStackTrace();
         }
 
+//        try {
+//            finishVi_json = new StringEntity(mapper.writeValueAsString(new PersonCount(num_of_element, userid)), ContentType.APPLICATION_JSON);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//        request_finishVi.setEntity(finishVi_json);
+//        CloseableHttpResponse response_viProof = null;
+//        try {
+//            response_viProof = httpClient.execute(request_finishVi);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        if(response_viProof.getStatusLine().getStatusCode() != 200){
+//            System.out.println("finishVi is not sent! "+response_viProof.getStatusLine().getStatusCode() );
+//        }
     }
 }
