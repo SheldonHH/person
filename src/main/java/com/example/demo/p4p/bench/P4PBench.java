@@ -48,7 +48,7 @@ import com.example.demo.p4p.util.P4PParameters;
  */
 
 public class P4PBench extends P4PParameters {
-    static private NativeBigInteger g = null;
+    static private NativeBigInteger g = new NativeBigInteger("3182089256208329047054709904358973599639052582169128376753217579641056697166499158386824120768854848163132851742558842187976312344846648732546791352223868");
 
     public static void main(String[] args) {
 	//throws IOException {

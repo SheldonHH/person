@@ -32,6 +32,7 @@
 package com.example.demo.p4p.server;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -61,8 +62,8 @@ import com.example.demo.net.i2p.util.NativeBigInteger;
  */
 
 public class P4PServer extends P4PParameters {
-    private NativeBigInteger g = null;
-    private NativeBigInteger h = null;
+    private NativeBigInteger g = new NativeBigInteger("3182089256208329047054709904358973599639052582169128376753217579641056697166499158386824120768854848163132851742558842187976312344846648732546791352223868");
+    private NativeBigInteger h = new NativeBigInteger("9793143674503176705343368747667288665355699962542491643750752248068073537700661368128860976203407269976279596607505206660360515029147205303637405777467078");
 
     protected int m = -1;            // The dimension of user vector
     protected long F = -1;
@@ -267,6 +268,8 @@ public class P4PServer extends P4PParameters {
                             1 : -1;
             }
         }
+        c = new int[][] {{-1, 1, 0}, {0, 0, 1}, {-1, -1, 1}, {0, 0, -1}, {0, 0, -1}, {0, 0, 0}, {0, -1, 1}, {1, 0, -1}, {0, 1, 1}, {-1, 0, 0}, {0, 1, -1}, {-1, 0, -1}, {1, 0, 0}, {0, -1, 0}, {-1, 0, 1}, {-1, 0, 0}, {0, 0, -1}, {0, 1, 1}, {0, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, 0}, {1, 1, 0}, {0, -1, 0}, {0, 0, 0}, {-1, 1, 0}, {-1, -1, 0}, {0, -1, 1}, {1, 0, 1}, {0, -1, 0}, {1, 0, -1}, {1, 0, -1}, {-1, -1, -1}, {0, 1, 1}, {0, 0, 0}, {0, 0, -1}, {0, 0, -1}, {0, 0, 0}, {-1, 0, 1}, {0, -1, 0}, {1, 0, 0}, {0, 1, 1}, {0, 0, 0}, {-1, 0, -1}, {1, 1, -1}, {0, 0, -1}, {0, 1, 0}, {0, -1, 0}, {1, 0, -1}, {0, 1, 0}};
+        System.out.println("c:"+ Arrays.deepToString(c));
     }
 
     /**

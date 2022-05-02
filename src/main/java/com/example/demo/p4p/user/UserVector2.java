@@ -44,6 +44,8 @@ import com.example.demo.p4p.crypto.Proof;
 import com.example.demo.p4p.crypto.BitCommitment;
 import com.example.demo.p4p.crypto.ThreeWayCommitment;
 import com.example.demo.p4p.crypto.Commitment;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Changes:
@@ -75,8 +77,8 @@ import com.example.demo.p4p.crypto.Commitment;
 
 public class UserVector2 extends UserVector implements Serializable{
     private static final long serialVersionUID = 6529685098267757690L;
-    static private NativeBigInteger g = null;
-    static private NativeBigInteger h = null;
+    static private NativeBigInteger g = new NativeBigInteger("3182089256208329047054709904358973599639052582169128376753217579641056697166499158386824120768854848163132851742558842187976312344846648732546791352223868");
+    static private NativeBigInteger h = new NativeBigInteger("9793143674503176705343368747667288665355699962542491643750752248068073537700661368128860976203407269976279596607505206660360515029147205303637405777467078");
     //private SquareCommitment sc = null;
 
     public UserVector2(){
@@ -293,8 +295,8 @@ public class UserVector2 extends UserVector implements Serializable{
         private BitCommitment.BitCommitmentProof[] bcProofs = null;
         // The bit proof for the sum of the squares
         static private boolean forServer = false;
-        static private L2NormBoundProof2 serverProof = new L2NormBoundProof2(true);
-        static private L2NormBoundProof2 peerProof = new L2NormBoundProof2(false);
+         private L2NormBoundProof2 serverProof = null;
+         private L2NormBoundProof2 peerProof = null;
         private int ssBL = 0;
 
 
@@ -306,7 +308,8 @@ public class UserVector2 extends UserVector implements Serializable{
          * @param	forServer       will build a server proof if true. Otherise
          *                          build proof for the privacy peer.
          */
-        public L2NormBoundProof2(boolean forServer) {
+        @JsonCreator
+        public L2NormBoundProof2(@JsonProperty("forServer") boolean forServer) {
             this.forServer = forServer;
         }
 
@@ -325,8 +328,8 @@ public class UserVector2 extends UserVector implements Serializable{
                 throw new RuntimeException("Checksum vector not set or shares"
                         + " not generated yet.");
 
-//            serverProof = new L2NormBoundProof2(true);
-//            peerProof =  new L2NormBoundProof2(false);
+            serverProof = new L2NormBoundProof2(true);
+            peerProof =  new L2NormBoundProof2(false);
 
             /** For the server: */
             serverProof.checksums = new long[c.length];

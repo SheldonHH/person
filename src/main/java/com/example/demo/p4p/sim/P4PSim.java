@@ -76,11 +76,12 @@ import org.apache.http.util.EntityUtils;
  */
 
 public class P4PSim extends P4PParameters {
-    private static NativeBigInteger g = null;
-    private static NativeBigInteger h = null;
+    private static NativeBigInteger g = new NativeBigInteger("3182089256208329047054709904358973599639052582169128376753217579641056697166499158386824120768854848163132851742558842187976312344846648732546791352223868");
+    private static NativeBigInteger h = new NativeBigInteger("9793143674503176705343368747667288665355699962542491643750752248068073537700661368128860976203407269976279596607505206660360515029147205303637405777467078");
+
 
     private static int k = 512;     // Security parameter
-    private static int m = 10000;      // User vector dimension
+    private static int m = 3;      // User vector dimension
     private static int n = 1;      // Number of users
     private static int l = 40;      // Bit length of L
     final static CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -166,7 +167,9 @@ public class P4PSim extends P4PParameters {
         rand.nextBoolean();
 
         long L = ((long) 2) << l - 1;
+        L = 1099511627776L;
         long F = BigInteger.probablePrime(Math.min(l + 30, 62), rand).longValue();
+        F = 3871393383742833983L;
         // Make the field size to be 10 bits larger than l
 
         // Or just make F 62 bits? Note that we can't use 64 bit since there is no
@@ -203,8 +206,20 @@ public class P4PSim extends P4PParameters {
                 System.out.println(data);
 //                int[][] c = new int[zkpIterations][];
                 NativeBigInteger[] bi = P4PParameters.getGenerators(2);
-                g = bi[0];
-                h = bi[1];
+//                g = bi[0];
+//                h = bi[1];
+
+                g = new NativeBigInteger("3459276026518079674568408512735917085876933054878224377582397778495423201743627684916338757642004215208935956214764216182555928533733818616652879775932081");
+                h = new NativeBigInteger("1815409602493030510804268646246184547552449386433387561905816534248675443892847368541434018303659631380097127756952567150690215332149993674119991116919571");
+
+                System.out.println("g:");
+                System.out.println(g);
+                System.out.println("g.signum()"+g.signum());
+
+                System.out.println("g.getMagnitude()"+g.signum());
+                System.out.println("h.signum()"+g.signum());
+                System.out.println("h:");
+                System.out.println(h);
 
                 P4PServer server = new P4PServer(m, F, l, zkpIterations, g, h);
                 P4PPeer peer = new P4PPeer(m, F, l, zkpIterations, g, h);

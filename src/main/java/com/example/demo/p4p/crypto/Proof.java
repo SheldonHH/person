@@ -33,7 +33,12 @@ package com.example.demo.p4p.crypto;
 
 import java.math.BigInteger;
 
+import com.example.demo.p4p.user.UserVector2;
 import com.example.demo.p4p.util.P4PParameters;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  *
@@ -48,7 +53,12 @@ import com.example.demo.p4p.util.P4PParameters;
  * @author ET 08/29/2005
  */
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = UserVector2.L2NormBoundProof2.class, name = "L2NormBoundProof2")}
+)
+@JsonDeserialize(as=UserVector2.L2NormBoundProof2.class)
 public abstract class Proof extends P4PParameters {
     protected BigInteger[] commitment = null;
     /**

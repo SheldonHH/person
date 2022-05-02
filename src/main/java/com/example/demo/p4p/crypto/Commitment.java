@@ -53,8 +53,8 @@ import com.example.demo.net.i2p.util.NativeBigInteger;
 
 public class Commitment extends P4PParameters implements Serializable {
     private static final long serialVersionUID = 6529685098267757690L;
-    protected NativeBigInteger g = null;
-    protected NativeBigInteger h = null;
+    protected NativeBigInteger g = new NativeBigInteger("3182089256208329047054709904358973599639052582169128376753217579641056697166499158386824120768854848163132851742558842187976312344846648732546791352223868");
+    protected NativeBigInteger h = new NativeBigInteger("9793143674503176705343368747667288665355699962542491643750752248068073537700661368128860976203407269976279596607505206660360515029147205303637405777467078");
 
     /**
      * verify that the parameters are correct.
