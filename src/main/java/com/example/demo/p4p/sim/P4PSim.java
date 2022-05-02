@@ -362,37 +362,21 @@ public class P4PSim extends P4PParameters {
                         HttpPost request = new HttpPost("http://localhost:8080/api/v1/server/uiandproof");
                         UiandProof uiandProof = new UiandProof(userid, uv.getU(),serverProof);
 
-
                         ObjectMapper mapper = new ObjectMapper();
                         mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
                         StringEntity json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
-//
                         request.setEntity(json);
-
                         CloseableHttpResponse response = httpClient.execute(request);
-
                         if(response.getStatusLine().getStatusCode() != 200){
                             System.out.println("Student is not added! "+response.getStatusLine().getStatusCode() );
                         }
-//                        HttpPost request_uiProof = new HttpPost("http://localhost:8080/api/v1/server/uiandproof");
-                        HttpPost request_viProof = new HttpPost("http://localhost:9001/api/v1/peer/viandproof");
-//                        UiandProof uiandProof = new UiandProof(userid, uv.getU(),serverProof);
-                        ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof);
-//
-//                        ObjectMapper mapper = new ObjectMapper();
-//                        mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
-//                        StringEntity ui_json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
-                        StringEntity vi_json = new StringEntity(mapper.writeValueAsString(viandProof), ContentType.APPLICATION_JSON);
-////
-//                        request_uiProof.setEntity(ui_json);
-                        request_viProof.setEntity(vi_json);
-//
-//                        CloseableHttpResponse response_uiProof = httpClient.execute(request_uiProof);
-                        CloseableHttpResponse response_viProof = httpClient.execute(request_viProof);
 
-//                        if(response_uiProof.getStatusLine().getStatusCode() != 200){
-//                            System.out.println("uiProof is not sent! "+response_uiProof.getStatusLine().getStatusCode() );
-//                        }
+
+                        HttpPost request_viProof = new HttpPost("http://localhost:9001/api/v1/peer/viandproof");
+                        ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof);
+                        StringEntity vi_json = new StringEntity(mapper.writeValueAsString(viandProof), ContentType.APPLICATION_JSON);
+                        request_viProof.setEntity(vi_json);
+                        CloseableHttpResponse response_viProof = httpClient.execute(request_viProof);
                         if(response_viProof.getStatusLine().getStatusCode() != 200){
                             System.out.println("viProof is not sent! "+response_viProof.getStatusLine().getStatusCode() );
                         }
