@@ -33,17 +33,21 @@ package com.example.demo.p4p.sim;
 
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner; // Import the Scanner class to read text files
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.example.demo.model.UiandProof;
+import com.example.demo.model.ViandProof;
 import com.example.demo.p4p.user.UserVector2;
 import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.StopWatch;
@@ -88,7 +92,50 @@ public class P4PSim extends P4PParameters {
 
     /* Start a simulation.
      */
+    public static ArrayList<Integer> listofV(String RorC, int num_index, double israel){
+        ArrayList<Integer> list = new ArrayList<>();
+        int squareWidth = (int)Math.ceil(Math.sqrt(israel));
+
+
+        if(RorC.equals("col")){
+            for(int i = 0; i< israel; i++){
+                if(i % (int)Math.ceil(Math.sqrt(israel)) == num_index){
+                    System.out.print(i+", ");
+                    list.add(i);
+                }
+            }
+        }
+        if(RorC.equals("row")){
+            int[][] matrix = printMatrix(israel);
+            list = (ArrayList<Integer>) Arrays.stream(matrix[num_index]).boxed().collect(Collectors.toList());
+        }
+        return list;
+    }
+    public static int[][] printMatrix(double israel){
+        int sqWidth = (int)Math.ceil(Math.sqrt(israel));
+        int[][] matrixToReturn = new int[sqWidth][sqWidth];
+        int col = 0;
+        int row = 0;
+        ArrayList<Integer> list = new ArrayList<>();
+        for(int i = 0; i< israel; i++){
+            System.out.print(i+", ");
+            matrixToReturn[col][row] = i;
+            row++;
+            if((i+1) % (int)Math.ceil(Math.sqrt(israel)) == 0 ){
+                System.out.println("");
+                col++;
+                row=0;
+            }
+        }    System.out.println("");
+        return matrixToReturn;
+    }
     public static void main(String[] args) {
+        double israel = 70;
+        printMatrix(israel);
+//        System.out.println((int)Math.ceil(Math.sqrt(israel)));
+        System.out.println(listofV("row", 1, israel));
+
+
         UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
         int nLoops = 1;
         boolean doBench = false;
@@ -313,20 +360,27 @@ public class P4PSim extends P4PParameters {
 //                        String json_serverProof = gson.toJson(serverProof);
                         server.setProof(i, serverProof);
 
-                        HttpPost request = new HttpPost("http://localhost:8080/api/v1/server/uiandproof");
+                        HttpPost request_uiProof = new HttpPost("http://localhost:8080/api/v1/server/uiandproof");
+                        HttpPost request_viProof = new HttpPost("http://localhost:9001/api/v1/server/viandproof");
                         UiandProof uiandProof = new UiandProof(userid, uv.getU(),serverProof);
-
+                        ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof);
 
                         ObjectMapper mapper = new ObjectMapper();
                         mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
-                        StringEntity json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
+                        StringEntity ui_json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
+                        StringEntity vi_json = new StringEntity(mapper.writeValueAsString(viandProof), ContentType.APPLICATION_JSON);
 //
-                        request.setEntity(json);
+                        request_uiProof.setEntity(ui_json);
+                        request_uiProof.setEntity(vi_json);
 
-                        CloseableHttpResponse response = httpClient.execute(request);
+                        CloseableHttpResponse response_uiProof = httpClient.execute(request_uiProof);
+                        CloseableHttpResponse response_viProof = httpClient.execute(request_viProof);
 
-                        if(response.getStatusLine().getStatusCode() != 200){
-                            System.out.println("Student is not added! "+response.getStatusLine().getStatusCode() );
+                        if(response_uiProof.getStatusLine().getStatusCode() != 200){
+                            System.out.println("uiProof is not sent! "+response_uiProof.getStatusLine().getStatusCode() );
+                        }
+                        if(response_viProof.getStatusLine().getStatusCode() != 200){
+                            System.out.println("viProof is not sent! "+response_viProof.getStatusLine().getStatusCode() );
                         }
 
 //  3️⃣. The peer:
