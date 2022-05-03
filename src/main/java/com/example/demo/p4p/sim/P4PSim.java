@@ -121,8 +121,27 @@ public class P4PSim extends P4PParameters {
         return (int)Math.ceil(Math.sqrt(israel));
     }
 
+    public static void truncateHMatrixDB(){
+        String SQL = "TRUNCATE TABLE VHashMatrix; ";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL,
+                     Statement.RETURN_GENERATED_KEYS)) {
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    System.out.println(rs);
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public static int persistDB(long lineNum, long[] vi, long totalLine){
-        String SQL = "TRUNCATE TABLE VHashMatrix; INSERT INTO VHashMatrix(v_id, row, col, vi) "
+        String SQL = "INSERT INTO VHashMatrix(v_id, row, col, vi) "
                 + "VALUES(?,?,?,?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL,
@@ -179,7 +198,7 @@ public class P4PSim extends P4PParameters {
 ////        System.out.println((int)Math.ceil(Math.sqrt(israel)));
 //        System.out.println(listofV("row", 1, israel));
 
-
+        truncateHMatrixDB();
         UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
         int nLoops = 1;
         boolean doBench = false;

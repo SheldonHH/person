@@ -14,14 +14,11 @@ import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Repository("postgres")
 public class PersonDataAccessService implements PersonDao{
-    private final String url = "jdbc:postgresql://localhost:5432/demodb";
+    private final String url = "jdbc:postgresql://localhost:5432/client1";
     private final String user = "postgres";
     private final String password = "password";
     UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
@@ -70,60 +67,68 @@ public class PersonDataAccessService implements PersonDao{
 
     @Override
     public int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix){
-        System.out.println("P_VifromSQMatrix: "+p_vifromSQMatrix);
+        System.out.println("P_VifromSQMatrix: "+p_vifromSQMatrix.getRow());
+        System.out.println("P_VifromSQMatrix: "+p_vifromSQMatrix.getCol());
         int requestRow = p_vifromSQMatrix.getRow();
         int requestCol = p_vifromSQMatrix.getCol();
-        HttpPost request = new HttpPost("http://localhost:9000/api/v1/peer/rcvituples");
 
-        String[][] colVi = null;
-        String[][] rowVi  = null;
-        RCVisTupleUser rcVisTupleUser = new RCVisTupleUser(userid, new RCVisTuple(rowVi, colVi));
+        ArrayList<String> rowViList = new ArrayList<>();
+        ArrayList<String> colViList = new ArrayList<>();
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
-        StringEntity json = null;
-
-        String rowSQL = "SELECT vid "
+        String rowSQL = "SELECT vi "
                 + "FROM VHashMatrix "
                 + "WHERE row = ?";
-        String colSQL = "SELECT vid "
+        String colSQL = "SELECT vi "
                 + "FROM VHashMatrix "
                 + "WHERE col = ?";
         try{
             Connection conn = connect();
             PreparedStatement preparedStatementRow = conn.prepareStatement(rowSQL);
             PreparedStatement preparedStatementCol = conn.prepareStatement(colSQL);
-            preparedStatementRow.setInt(1, requestRow);
-            preparedStatementCol.setInt(1, requestCol);
+            preparedStatementRow.setString(1, ""+requestRow);
+            preparedStatementCol.setString(1, ""+requestCol);
             ResultSet rsRow = preparedStatementRow.executeQuery();
-            ResultSet rsCol = preparedStatementRow.executeQuery();
             while(rsRow.next()){
-                String[] vid_arr = (String[]) rsRow.getArray("vi").getArray();
-                System.out.println("Row: vid_arr:"+vid_arr);
+                rowViList = new ArrayList<>( Arrays.asList((String[]) rsRow.getArray("vi").getArray()));
+                System.out.println("rowViList:"+rowViList);
             }
+//            if (rsRow.next()) {
+//                System.out.println(rsRow.getString(1));
+//            }
+//            rsRow.close();
+
+            ResultSet rsCol = preparedStatementRow.executeQuery();
             while(rsCol.next()){
-                String[] vid_arr = (String[]) rsCol.getArray("vi").getArray();
-                System.out.println("Row: vid_arr:"+vid_arr);
+                colViList = new ArrayList<>(  Arrays.asList((String[]) rsCol.getArray("vi").getArray()));
+                System.out.println("colViList:"+colViList);
             }
+//            if (rsCol.next()) {
+//                System.out.println(rsCol.getString(1));
+//            }
+//            rsCol.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+
         try {
-            json = new StringEntity(mapper.writeValueAsString(rcVisTupleUser), ContentType.APPLICATION_JSON);
+            HttpPost request = new HttpPost("http://localhost:" +
+                    "9001/api/v1/peer/rcvituples");
+            RCVisTupleUser rcVisTupleUser = new RCVisTupleUser(userid, new RCVisTuple(rowViList, colViList));
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
+            StringEntity json = new StringEntity(mapper.writeValueAsString(rcVisTupleUser), ContentType.APPLICATION_JSON);
+            request.setEntity(json);
+            CloseableHttpResponse response = httpClient.execute(request);
+            if(response.getStatusLine().getStatusCode() != 200){
+                System.out.println("requested rcViTuples not added! "+response.getStatusLine().getStatusCode() );
+            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-        }
-        request.setEntity(json);
-        CloseableHttpResponse response = null;
-        try {
-            response = httpClient.execute(request);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(response.getStatusLine().getStatusCode() != 200){
-            System.out.println("Student is not added! "+response.getStatusLine().getStatusCode() );
-        }
+
         return 0;
 //        return null;
     }
