@@ -30,6 +30,13 @@ CREATE TABLE VHashMatrix (
     col integer,
     vi TEXT[]
 );
+DROP TABLE IF EXISTS DiUnitRange;
+CREATE TABLE DiUnitRange (
+    d_id serial PRIMARY KEY,
+    unitrange TEXT,
+    di TEXT[]
+);
+    
     
 
 ALTER ROLE "client1" WITH LOGIN;

@@ -32,8 +32,8 @@ public class FakePersonDataAccessService implements PersonDao{
     }
 
     @Override
-    public long[] requestSumandCountforUnit(P_SumandCountforUnit p_sumandCountforUnit) {
-        return new long[0];
+    public int requestSumandCountforUnit(String requestedUnitRange) {
+        return 0;
     }
 
     @Override

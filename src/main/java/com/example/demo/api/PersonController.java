@@ -27,8 +27,8 @@ public class PersonController {
     }
 
     @PostMapping("/sumCountforUnit") //serverID
-    public void requestSumandCountforUnit(@Valid @NonNull @RequestBody P_SumandCountforUnit p_sumandCountforUnit){
-        personService.requestSumandCountforUnit(p_sumandCountforUnit);
+    public void requestSumandCountforUnit(@Valid @NonNull @RequestBody String requestedUnitRange){
+        personService.requestSumandCountforUnit(requestedUnitRange);
     }
 
     @PostMapping

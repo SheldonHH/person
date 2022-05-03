@@ -5,6 +5,7 @@ import com.example.demo.model.P_VifromSQMatrix;
 import com.example.demo.model.Person;
 import com.example.demo.model.RCVisTuple;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +22,7 @@ PersonDao {
     // return zero or one depends on whether data is persisted
 
     int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix);
-    long[] requestSumandCountforUnit(P_SumandCountforUnit p_sumandCountforUnit);
+    int requestSumandCountforUnit(String requestedUnitRange);
     List<Person> selectAllPeople();
 
     Optional<Person> selectPersonById(UUID id);

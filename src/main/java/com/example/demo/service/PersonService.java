@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class PersonService {
     }
 
     public int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix) { return personDao.requestVifromSQMatrix(p_vifromSQMatrix);}
-    public long[] requestSumandCountforUnit(P_SumandCountforUnit p_sumandCountforUnit){ return personDao.requestSumandCountforUnit(p_sumandCountforUnit);}
+    public int requestSumandCountforUnit(String requestedUnitRange){ return personDao.requestSumandCountforUnit(requestedUnitRange);}
     public List<Person> getAllPeople() {
         return personDao.selectAllPeople();
     }

@@ -134,9 +134,71 @@ public class PersonDataAccessService implements PersonDao{
     }
 
     @Override
-    public long[] requestSumandCountforUnit(P_SumandCountforUnit p_sumandCountforUnit) {
+    public int requestSumandCountforUnit(String requestedUnitRange) {
+        String SQL = "SELECT DISTINCT di "
+                + "FROM DiUnitRange "
+                + "WHERE unitrange = ?";
+        String CountSQL = "SELECT COUNT(*) FROM ( "
+                + "SELECT DISTINCT * "
+                + "FROM DiUnitRange "
+                + "WHERE unitrange = ? )";
+        System.out.println("Reach here: "+requestedUnitRange);
+        ArrayList<String> stringList = new ArrayList<String>();
+        try{
+            Connection conn = connect();
+            PreparedStatement preparedStatement = conn.prepareStatement(SQL);
+            preparedStatement.setString(1, requestedUnitRange);
+            ResultSet rs = preparedStatement.executeQuery();
+            ArrayList<ArrayList<Long>> TwoDResultList = new ArrayList<ArrayList<Long>>();
+            System.out.println("rs.getRow()"+rs.getRow());
+            while(rs.next()){
+//                stringList = new ArrayList<>( Arrays.asList((String[]) rs.getArray("di").getArray()));
+                    System.out.println(Arrays.asList((String[]) rs.getArray("di").getArray()));
+////                ArrayList<Long> resultIntList = new ArrayList<Long>();
+////                for(String stringValue: stringList) {
+////                    try {
+////                        //Convert String to long, and store it into long array list.
+////                        resultIntList.add(Long.parseLong(stringValue));
+////                    } catch(NumberFormatException nfe) {
+////                        System.out.println("Could not parse " + nfe);
+//////                        Log.w("NumberFormat", "Parsing failed! " + stringValue + " can not be an integer");
+////                    }
+////                }
+////                TwoDResultList.add(resultIntList);
+//            }
+            rs.close();
+//            ArrayList<Long> sum = new ArrayList<Long>(TwoDResultList.get(0).size());
+//            for(ArrayList<Long> sg: TwoDResultList){
+//                for(int i = 0; i < sg.size(); i++){
+//                    sum.set(i,sum.get(i)+sg.get(i));
+//                }
+            }
+//
+//            ResultSet rsCount = preparedStatementCount.executeQuery();
+//            int countForRequestUnit = 0;
+//            while(rsCount.next()){
+//                countForRequestUnit = rsCount.getInt(0);
+//            }
+//            HttpPost request = new HttpPost("http://localhost:" + "8080/api/v1/server/samplesumcount");
+//            ResponseSumCount responseSumCount = new ResponseSumCount(sum, countForRequestUnit);
+//            ObjectMapper mapper = new ObjectMapper();
+//            mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
+//            StringEntity json = new StringEntity(mapper.writeValueAsString(responseSumCount), ContentType.APPLICATION_JSON);
+//            request.setEntity(json);
+//            CloseableHttpResponse response = httpClient.execute(request);
+//            if(response.getStatusLine().getStatusCode() != 200){
+//                System.out.println("requested rcViTuples not added! "+response.getStatusLine().getStatusCode() );
+//            }
 
-        return new long[0];
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+//        catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        return 0;
     }
 
     @Override

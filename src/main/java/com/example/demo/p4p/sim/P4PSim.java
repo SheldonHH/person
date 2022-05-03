@@ -46,9 +46,7 @@ import java.util.Scanner; // Import the Scanner class to read text files
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.example.demo.model.PersonCount;
-import com.example.demo.model.UiandProof;
-import com.example.demo.model.ViandProof;
+import com.example.demo.model.*;
 import com.example.demo.p4p.user.UserVector2;
 import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.StopWatch;
@@ -121,6 +119,7 @@ public class P4PSim extends P4PParameters {
         return (int)Math.ceil(Math.sqrt(israel));
     }
 
+
     public static void truncateHMatrixDB(){
         String SQL = "TRUNCATE TABLE VHashMatrix; ";
         try (Connection conn = connect();
@@ -140,7 +139,37 @@ public class P4PSim extends P4PParameters {
         }
     }
 
-    public static int persistDB(long lineNum, long[] vi, long totalLine){
+    public static int insertDiwithUnitRange(String range, long[] di) {
+        String SQL = "INSERT INTO DiUnitRange(unitrange, di) "
+                + "VALUES(?,?)";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL,
+                     Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setObject (1, range);
+            String[] strArray = Arrays.stream(di)
+                    .mapToObj(String::valueOf)
+                    .toArray(String[]::new);
+            Array sg = conn.createArrayOf("TEXT", strArray);
+            pstmt.setArray (2, sg);
+            int affectedRows = pstmt.executeUpdate();
+            // check the affected rows
+            if (affectedRows > 0) {
+                // get the ID back
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    System.out.println(rs);
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public static int persistViwithColRow(long lineNum, long[] vi, long totalLine){
         String SQL = "INSERT INTO VHashMatrix(v_id, row, col, vi) "
                 + "VALUES(?,?,?,?)";
         try (Connection conn = connect();
@@ -192,14 +221,55 @@ public class P4PSim extends P4PParameters {
         }    System.out.println("");
         return matrixToReturn;
     }
+
+    public static String gauss_params;
+    public static void readGaussParams() {
+        try {
+            String fileName = "/Users/mac/Desktop/FedBFT/voting/gauss_param.txt";
+            File myObj = new File(fileName);
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                gauss_params = myReader.nextLine();
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public static String findRange(String dimension,long a){
+        double LowerRange=0, UpperRange=0;
+        if(Math.abs(a) >= 10){
+            if(a > 0){
+               LowerRange = ((double)a - (double)(a%10));
+               UpperRange = LowerRange+10;
+            }else{
+               UpperRange = ((double)a - (double)(a%10));
+               LowerRange = UpperRange-10;
+            }
+        }else if(Math.abs(a) >= 0 && Math.abs(a) < 10){
+            if(a >= 0){
+                LowerRange = 0;
+                UpperRange = 10;
+            }else{
+                LowerRange = -10;
+                UpperRange = 0;
+            }
+        }
+       return dimension+":"+LowerRange+"-"+UpperRange;
+    }
     public static void main(String[] args) {
+        readGaussParams();
 //        double israel = 70;
 //        printMatrix(israel);
 ////        System.out.println((int)Math.ceil(Math.sqrt(israel)));
 //        System.out.println(listofV("row", 1, israel));
-
+        long maxX1=Long.MIN_VALUE, maxX2=Long.MIN_VALUE, minX1=Long.MAX_VALUE, minX2=Long.MAX_VALUE;
         truncateHMatrixDB();
         UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
+
+        ArrayList<String> rangeforX12s = new ArrayList<String>();
         int nLoops = 1;
         boolean doBench = false;
         boolean worstcase = false;
@@ -308,6 +378,7 @@ public class P4PSim extends P4PParameters {
             Scanner myReader = new Scanner(myObj);
             long lineNum = 0;
             while (myReader.hasNextLine()) {
+                String rangeforX1="", rangeforX2="";
                 String strdata = myReader.nextLine();
                 m = strdata.length();
                 long[] data = new long[m];
@@ -315,8 +386,30 @@ public class P4PSim extends P4PParameters {
                 for (int did = 0; did < m; did++) {
                     long a = charArray[did] - '0';
                     data[did] = a;
+                    if(did == 0){
+                        if(a > maxX1){
+                            maxX1=a;
+                        }
+                        if(a < minX1){
+                            minX1=a;
+                        }
+                        rangeforX1 = findRange("X1",a);
+                    }
+
+                    if(did == 1){
+                        if(a > maxX2){
+                            maxX2=a;
+                        }
+                        if(a < minX2){
+                            minX2=a;
+                        }
+                        rangeforX2 = findRange("X2",a);
+                    }
                 }
+                rangeforX12s.add(rangeforX1+"--"+rangeforX2);
+                insertDiwithUnitRange(rangeforX1+"--"+rangeforX2,data);
                 System.out.println(data);
+
 //                int[][] c = new int[zkpIterations][];
                 NativeBigInteger[] bi = P4PParameters.getGenerators(2);
 //                g = bi[0];
@@ -449,7 +542,7 @@ public class P4PSim extends P4PParameters {
 
 //  3️⃣. The peer:
                         long[] vv = uv.getV();
-                        persistDB(lineNum, vv , dataLineNum);
+                        persistViwithColRow(lineNum, vv , dataLineNum);
 //  3️⃣.1 The peer: setV(); // 🌛 UserVector2(m, F, l, g, h)
                         UserVector2 pv = new UserVector2(m, F, l, g, h);
                         pv.setV(vv);
@@ -552,6 +645,15 @@ public class P4PSim extends P4PParameters {
             CloseableHttpResponse response_finishVi = httpClient.execute(request_finishVi);
             if(response_finishVi.getStatusLine().getStatusCode() != 200){
                 System.out.println("finishVi is not sent! "+response_finishVi.getStatusLine().getStatusCode() );
+            }
+
+
+            HttpPost request_BoundforGauss = new HttpPost("http://localhost:8080/api/v1/server/addGaussParamsSampleRange");
+            StringEntity boundforGauss_json = new StringEntity(mapper.writeValueAsString(new BoundforGauss(userid,maxX1,maxX2,minX1,minX2, gauss_params, rangeforX12s)), ContentType.APPLICATION_JSON);
+            request_BoundforGauss.setEntity(boundforGauss_json);
+            CloseableHttpResponse response_boundforGauss = httpClient.execute(request_BoundforGauss);
+            if(response_boundforGauss.getStatusLine().getStatusCode() != 200){
+                System.out.println("boundforGauss is not sent! "+response_boundforGauss.getStatusLine().getStatusCode() );
             }
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
