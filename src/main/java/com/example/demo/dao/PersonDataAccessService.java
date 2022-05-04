@@ -116,7 +116,7 @@ public class PersonDataAccessService implements PersonDao{
         try {
             HttpPost request = new HttpPost("http://localhost:" +
                     "9001/api/v1/peer/rcvituples");
-            ResponseVRowCol responseVRowCol = new  ResponseVRowCol(rowVs, colVs);
+            ResponseVRowCol responseVRowCol = new  ResponseVRowCol(userid, rowVs, colVs);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
             StringEntity json = new StringEntity(mapper.writeValueAsString(responseVRowCol), ContentType.APPLICATION_JSON);
