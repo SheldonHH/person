@@ -34,7 +34,6 @@ package com.example.demo.p4p.sim;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,25 +46,20 @@ import com.example.demo.model.*;
 import com.example.demo.p4p.user.UserVector2;
 import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.StopWatch;
-import com.example.demo.p4p.util.Util;
 import com.example.demo.net.i2p.util.NativeBigInteger;
 
 import com.example.demo.p4p.peer.P4PPeer;
 import com.example.demo.p4p.server.P4PServer;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 /*
  * Providing a simulation framework for a P4P system. This allows one to debug
@@ -86,6 +80,7 @@ public class P4PSim extends P4PParameters {
     private static NativeBigInteger h = new NativeBigInteger("9793143674503176705343368747667288665355699962542491643750752248068073537700661368128860976203407269976279596607505206660360515029147205303637405777467078");
 
 
+    static UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
     private static int k = 512;     // Security parameter
     private static int m = 3;      // User vector dimension
     private static int n = 1;      // Number of users
@@ -236,7 +231,7 @@ public class P4PSim extends P4PParameters {
                     } catch (SQLException ex) {
                         System.out.println(ex.getMessage());
                     }
-              }
+                }
             }
             for(int i = 0; i < colMap.size(); i++){
                 pstmt.setObject (1, UUID.randomUUID());
@@ -255,10 +250,29 @@ public class P4PSim extends P4PParameters {
                     }
                 }
             }
+            HttpPost request = new HttpPost("http://localhost:9001/api/v1/peer/rowcoltreehashmaps");
+            RowColTreeHMaps rowColTreeMaps = new RowColTreeHMaps(userid, colHashMap,rowHashMap);
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
+            StringEntity json = new StringEntity(mapper.writeValueAsString(rowColTreeMaps), ContentType.APPLICATION_JSON);
+            request.setEntity(json);
+            CloseableHttpResponse response = httpClient.execute(request);
+            if(response.getStatusLine().getStatusCode() != 200){
+                System.out.println("Student is not added! "+response.getStatusLine().getStatusCode() );
+            }
+            response.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
 
     }
     static ArrayList<List<Long>> allViList = new ArrayList<>();
@@ -365,7 +379,6 @@ public class P4PSim extends P4PParameters {
         long maxX1=Long.MIN_VALUE, maxX2=Long.MIN_VALUE, minX1=Long.MAX_VALUE, minX2=Long.MAX_VALUE;
         truncateHMatrixDB();
         truncateHashList();
-        UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
 
         ArrayList<String> rangeforX12s = new ArrayList<String>();
         int nLoops = 1;
