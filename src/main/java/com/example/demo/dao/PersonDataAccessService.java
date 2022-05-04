@@ -135,19 +135,22 @@ public class PersonDataAccessService implements PersonDao{
 
     @Override
     public int requestSumandCountforUnit(String requestedUnitRange) {
-        String SQL = "SELECT DISTINCT di "
+//        String SQL = "SELECT distinct di "
+//                + "FROM DiUnitRange "
+//                + "WHERE unitrange = ?;";
+        String SQL = "SELECT distinct di "
                 + "FROM DiUnitRange "
-                + "WHERE unitrange = ?";
-        String CountSQL = "SELECT COUNT(*) FROM ( "
-                + "SELECT DISTINCT * "
-                + "FROM DiUnitRange "
-                + "WHERE unitrange = ? )";
-        System.out.println("Reach here: "+requestedUnitRange);
+                + "WHERE unitrange=?";
+//        String CountSQL = "SELECT COUNT(*) FROM ( "
+//                + "SELECT DISTINCT * "
+//                + "FROM DiUnitRange "
+//                + "WHERE unitrange = ? )";
+        System.out.println("Reach here: "+requestedUnitRange.substring(1,requestedUnitRange.length()-1));
         ArrayList<String> stringList = new ArrayList<String>();
         try{
             Connection conn = connect();
             PreparedStatement preparedStatement = conn.prepareStatement(SQL);
-            preparedStatement.setString(1, requestedUnitRange);
+            preparedStatement.setString(1, requestedUnitRange.substring(1,requestedUnitRange.length()-1));
             ResultSet rs = preparedStatement.executeQuery();
             ArrayList<ArrayList<Long>> TwoDResultList = new ArrayList<ArrayList<Long>>();
             System.out.println("rs.getRow()"+rs.getRow());
@@ -166,13 +169,13 @@ public class PersonDataAccessService implements PersonDao{
 ////                }
 ////                TwoDResultList.add(resultIntList);
 //            }
-            rs.close();
 //            ArrayList<Long> sum = new ArrayList<Long>(TwoDResultList.get(0).size());
 //            for(ArrayList<Long> sg: TwoDResultList){
 //                for(int i = 0; i < sg.size(); i++){
 //                    sum.set(i,sum.get(i)+sg.get(i));
 //                }
             }
+            rs.close();
 //
 //            ResultSet rsCount = preparedStatementCount.executeQuery();
 //            int countForRequestUnit = 0;
