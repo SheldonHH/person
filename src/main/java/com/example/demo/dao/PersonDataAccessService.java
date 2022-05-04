@@ -72,8 +72,8 @@ public class PersonDataAccessService implements PersonDao{
         int requestRow = p_vifromSQMatrix.getRow();
         int requestCol = p_vifromSQMatrix.getCol();
 
-        ArrayList<String> rowViList = new ArrayList<>();
-        ArrayList<String> colViList = new ArrayList<>();
+        ArrayList<ArrayList<String>> rowVs = new ArrayList<>();
+        ArrayList<ArrayList<String>> colVs = new ArrayList<>();
 
         String rowSQL = "SELECT vi "
                 + "FROM VHashMatrix "
@@ -89,7 +89,8 @@ public class PersonDataAccessService implements PersonDao{
             preparedStatementCol.setString(1, ""+requestCol);
             ResultSet rsRow = preparedStatementRow.executeQuery();
             while(rsRow.next()){
-                rowViList = new ArrayList<>( Arrays.asList((String[]) rsRow.getArray("vi").getArray()));
+                ArrayList<String> rowViList = new ArrayList<>( Arrays.asList((String[]) rsRow.getArray("vi").getArray()));
+                rowVs.add(rowViList);
                 System.out.println("rowViList:"+rowViList);
             }
 //            if (rsRow.next()) {
@@ -97,9 +98,10 @@ public class PersonDataAccessService implements PersonDao{
 //            }
 //            rsRow.close();
 
-            ResultSet rsCol = preparedStatementRow.executeQuery();
+            ResultSet rsCol = preparedStatementCol.executeQuery();
             while(rsCol.next()){
-                colViList = new ArrayList<>(  Arrays.asList((String[]) rsCol.getArray("vi").getArray()));
+                ArrayList<String> colViList = new ArrayList<>(  Arrays.asList((String[]) rsCol.getArray("vi").getArray()));
+                colVs.add(colViList);
                 System.out.println("colViList:"+colViList);
             }
 //            if (rsCol.next()) {
@@ -114,10 +116,10 @@ public class PersonDataAccessService implements PersonDao{
         try {
             HttpPost request = new HttpPost("http://localhost:" +
                     "9001/api/v1/peer/rcvituples");
-            RCVisTupleUser rcVisTupleUser = new RCVisTupleUser(userid, new RCVisTuple(rowViList, colViList));
+            ResponseVRowCol responseVRowCol = new  ResponseVRowCol(rowVs, colVs);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
-            StringEntity json = new StringEntity(mapper.writeValueAsString(rcVisTupleUser), ContentType.APPLICATION_JSON);
+            StringEntity json = new StringEntity(mapper.writeValueAsString(responseVRowCol), ContentType.APPLICATION_JSON);
             request.setEntity(json);
             CloseableHttpResponse response = httpClient.execute(request);
             if(response.getStatusLine().getStatusCode() != 200){

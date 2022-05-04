@@ -178,13 +178,13 @@ public class P4PSim extends P4PParameters {
             if(curCol == null){
                 colMap.put(i%sqWidth(totalLine), ""+allViList.get(i).toString());
             }else{
-                rowMap.put(i%sqWidth(totalLine), colMap.get(curCol+""+allViList.get(i).toString()));
+                rowMap.put(i%sqWidth(totalLine), curCol+""+allViList.get(i).toString());
             }
             curRow = rowMap.get(i/sqWidth(totalLine));
             if(curRow== null){
                 rowMap.put(i/sqWidth(totalLine), ""+allViList.get(i).toString());
             }else{
-                rowMap.put (i/sqWidth(totalLine), rowMap.get(curRow+""+allViList.get(i).toString()));
+                rowMap.put (i/sqWidth(totalLine), curRow+""+allViList.get(i).toString());
             }
         }
         for(int i = 0; i < rowMap.size(); i++){
@@ -195,7 +195,8 @@ public class P4PSim extends P4PParameters {
         }
 
 
-        String SQL = "INSERT INTO HashList(hash_id, rowOrCol, concatedResult, HashResult) "
+        String SQL = "INSERT INTO " +
+                "HashList(hash_id, rowOrCol, concatedResult, HashResult) "
                 + "VALUES(?,?,?,?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL,
@@ -203,7 +204,11 @@ public class P4PSim extends P4PParameters {
             for(int i = 0; i < rowMap.size(); i++){
                 pstmt.setObject (1, UUID.randomUUID());
                 pstmt.setString(2, "row");
-                pstmt.setString(3, rowMap.get(i));
+                pstmt.setString(
+
+
+
+                        3, rowMap.get(i));
                 pstmt.setInt(4, rowHashMap.get(i));
                 int affectedRows = pstmt.executeUpdate();
                 // check the affected rows

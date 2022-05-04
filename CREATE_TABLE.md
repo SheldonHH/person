@@ -38,7 +38,7 @@ CREATE TABLE DiUnitRange (
 );
 DROP TABLE IF EXISTS HashList;
 CREATE TABLE HashList (
-    hash_id serial PRIMARY KEY,
+    hash_id UUID PRIMARY KEY,
     rowOrCol TEXT,
     concatedResult TEXT,
     HashResult Integer
