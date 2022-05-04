@@ -40,10 +40,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner; // Import the Scanner class to read text files
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.example.demo.model.*;
@@ -168,8 +165,84 @@ public class P4PSim extends P4PParameters {
         }
         return 0;
     }
-    
+
+    public static void persistHashColRow(ArrayList<List<Long>> allViList){
+        int totalLine = allViList.size();
+        String curRow = new String(), curCol=new String();
+        TreeMap<Integer, String> rowMap = new TreeMap<>();
+        TreeMap<Integer, String> colMap = new TreeMap<>();
+        TreeMap<Integer, Integer> colHashMap = new TreeMap<>();
+        TreeMap<Integer, Integer> rowHashMap = new TreeMap<>();
+        for(int i = 0; i<totalLine; i++){
+            curCol = colMap.get(i%sqWidth(totalLine));
+            if(curCol == null){
+                colMap.put(i%sqWidth(totalLine), ""+allViList.get(i).toString());
+            }else{
+                rowMap.put(i%sqWidth(totalLine), colMap.get(curCol+""+allViList.get(i).toString()));
+            }
+            curRow = rowMap.get(i/sqWidth(totalLine));
+            if(curRow== null){
+                rowMap.put(i/sqWidth(totalLine), ""+allViList.get(i).toString());
+            }else{
+                rowMap.put (i/sqWidth(totalLine), rowMap.get(curRow+""+allViList.get(i).toString()));
+            }
+        }
+        for(int i = 0; i < rowMap.size(); i++){
+            rowHashMap.put(i, rowMap.get(i).hashCode());
+        }
+        for(int i = 0; i < colMap.size(); i++){
+            colHashMap.put(i, colMap.get(i).hashCode());
+        }
+
+
+        String SQL = "INSERT INTO HashList(hash_id, rowOrCol, concatedResult, HashResult) "
+                + "VALUES(?,?,?,?)";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL,
+                     Statement.RETURN_GENERATED_KEYS)) {
+            for(int i = 0; i < rowMap.size(); i++){
+                pstmt.setObject (1, UUID.randomUUID());
+                pstmt.setString(2, "row");
+                pstmt.setString(3, rowMap.get(i));
+                pstmt.setInt(4, rowHashMap.get(i));
+                int affectedRows = pstmt.executeUpdate();
+                // check the affected rows
+                if (affectedRows > 0) {
+                    // get the ID back
+                    try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                        System.out.println(rs);
+                    } catch (SQLException ex) {
+                        System.out.println(ex.getMessage());
+                    }
+              }
+            }
+            for(int i = 0; i < colMap.size(); i++){
+                pstmt.setObject (1, UUID.randomUUID());
+                pstmt.setString(2, "col");
+                pstmt.setString(3, colMap.get(i));
+                pstmt.setInt(4, colHashMap.get(i));
+                int affectedRows = pstmt.executeUpdate();
+                // check the affected rows
+                if (affectedRows > 0) {
+                    // get the ID back
+                    try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                        System.out.println(rs);
+                    } catch (SQLException ex) {
+                        System.out.println(ex.getMessage());
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+    static ArrayList<List<Long>> allViList = new ArrayList<>();
     public static int persistViwithColRow(long lineNum, long[] vi, long totalLine){
+        List<Long> viList = Arrays.stream(vi)        // IntStream
+                .boxed()          // Stream<Integer>
+                .collect(Collectors.toList());
         String SQL = "INSERT INTO VHashMatrix(v_id, row, col, vi) "
                 + "VALUES(?,?,?,?)";
         try (Connection conn = connect();
@@ -201,6 +274,7 @@ public class P4PSim extends P4PParameters {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
+        allViList.add(viList);
         return 0;
     }
     public static int[][] printMatrix(double israel){
@@ -635,6 +709,8 @@ public class P4PSim extends P4PParameters {
                 lineNum++;
             }
             myReader.close();
+
+            persistHashColRow(allViList);
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);

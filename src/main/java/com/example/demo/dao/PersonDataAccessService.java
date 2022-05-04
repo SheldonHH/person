@@ -77,10 +77,10 @@ public class PersonDataAccessService implements PersonDao{
 
         String rowSQL = "SELECT vi "
                 + "FROM VHashMatrix "
-                + "WHERE row = ?";
+                + "WHERE row = ? order by col";
         String colSQL = "SELECT vi "
                 + "FROM VHashMatrix "
-                + "WHERE col = ?";
+                + "WHERE col = ? order by row";
         try{
             Connection conn = connect();
             PreparedStatement preparedStatementRow = conn.prepareStatement(rowSQL);

@@ -36,6 +36,14 @@ CREATE TABLE DiUnitRange (
     unitrange TEXT,
     di TEXT[]
 );
+DROP TABLE IF EXISTS HashList;
+CREATE TABLE HashList (
+    hash_id serial PRIMARY KEY,
+    rowOrCol TEXT,
+    concatedResult TEXT,
+    HashResult Integer
+);
+
     
     
 
