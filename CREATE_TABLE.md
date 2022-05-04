@@ -40,6 +40,7 @@ DROP TABLE IF EXISTS HashList;
 CREATE TABLE HashList (
     hash_id UUID PRIMARY KEY,
     rowOrCol TEXT,
+    index integer,
     concatedResult TEXT,
     HashResult Integer
 );

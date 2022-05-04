@@ -116,6 +116,24 @@ public class P4PSim extends P4PParameters {
         return (int)Math.ceil(Math.sqrt(israel));
     }
 
+    public static void truncateHashList(){
+        String SQL = "TRUNCATE TABLE HashList; ";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL,
+                     Statement.RETURN_GENERATED_KEYS)) {
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    System.out.println(rs);
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     public static void truncateHMatrixDB(){
         String SQL = "TRUNCATE TABLE VHashMatrix; ";
@@ -178,38 +196,37 @@ public class P4PSim extends P4PParameters {
             if(curCol == null){
                 colMap.put(i%sqWidth(totalLine), ""+allViList.get(i).toString());
             }else{
-                rowMap.put(i%sqWidth(totalLine), curCol+""+allViList.get(i).toString());
+                colMap.put(i%sqWidth(totalLine), curCol+", "+allViList.get(i).toString());
             }
             curRow = rowMap.get(i/sqWidth(totalLine));
             if(curRow== null){
                 rowMap.put(i/sqWidth(totalLine), ""+allViList.get(i).toString());
             }else{
-                rowMap.put (i/sqWidth(totalLine), curRow+""+allViList.get(i).toString());
+                rowMap.put (i/sqWidth(totalLine), curRow+", "+allViList.get(i).toString());
             }
         }
+        System.out.println("rowMap"+rowMap);
         for(int i = 0; i < rowMap.size(); i++){
-            rowHashMap.put(i, rowMap.get(i).hashCode());
+            System.out.println("rowMap.get(i)"+rowMap.get(i));
+            rowHashMap.put(i, ("["+rowMap.get(i)+"]").hashCode());
         }
         for(int i = 0; i < colMap.size(); i++){
-            colHashMap.put(i, colMap.get(i).hashCode());
+            colHashMap.put(i, ("["+colMap.get(i)+"]").hashCode());
         }
 
 
         String SQL = "INSERT INTO " +
-                "HashList(hash_id, rowOrCol, concatedResult, HashResult) "
-                + "VALUES(?,?,?,?)";
+                "HashList(hash_id, rowOrCol, index, concatedResult, HashResult) "
+                + "VALUES(?,?,?,?,?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
             for(int i = 0; i < rowMap.size(); i++){
                 pstmt.setObject (1, UUID.randomUUID());
                 pstmt.setString(2, "row");
-                pstmt.setString(
-
-
-
-                        3, rowMap.get(i));
-                pstmt.setInt(4, rowHashMap.get(i));
+                pstmt.setInt(3, i);
+                pstmt.setString(4, rowMap.get(i));
+                pstmt.setInt(5, rowHashMap.get(i));
                 int affectedRows = pstmt.executeUpdate();
                 // check the affected rows
                 if (affectedRows > 0) {
@@ -224,8 +241,9 @@ public class P4PSim extends P4PParameters {
             for(int i = 0; i < colMap.size(); i++){
                 pstmt.setObject (1, UUID.randomUUID());
                 pstmt.setString(2, "col");
-                pstmt.setString(3, colMap.get(i));
-                pstmt.setInt(4, colHashMap.get(i));
+                pstmt.setInt(3, i);
+                pstmt.setString(4, colMap.get(i));
+                pstmt.setInt(5, colHashMap.get(i));
                 int affectedRows = pstmt.executeUpdate();
                 // check the affected rows
                 if (affectedRows > 0) {
@@ -346,6 +364,7 @@ public class P4PSim extends P4PParameters {
 //        System.out.println(listofV("row", 1, israel));
         long maxX1=Long.MIN_VALUE, maxX2=Long.MIN_VALUE, minX1=Long.MAX_VALUE, minX2=Long.MAX_VALUE;
         truncateHMatrixDB();
+        truncateHashList();
         UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
 
         ArrayList<String> rangeforX12s = new ArrayList<String>();
