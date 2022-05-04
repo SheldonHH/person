@@ -141,66 +141,75 @@ public class PersonDataAccessService implements PersonDao{
         String SQL = "SELECT distinct di "
                 + "FROM DiUnitRange "
                 + "WHERE unitrange=?";
-//        String CountSQL = "SELECT COUNT(*) FROM ( "
-//                + "SELECT DISTINCT * "
-//                + "FROM DiUnitRange "
-//                + "WHERE unitrange = ? )";
+        String CountSQL = "SELECT COUNT(DISTINCT di) "
+                + "FROM DiUnitRange "
+                + "WHERE unitrange = ? ";
         System.out.println("Reach here: "+requestedUnitRange.substring(1,requestedUnitRange.length()-1));
         ArrayList<String> stringList = new ArrayList<String>();
         try{
             Connection conn = connect();
             PreparedStatement preparedStatement = conn.prepareStatement(SQL);
+            PreparedStatement preparedStatementCountSQL = conn.prepareStatement(CountSQL);
             preparedStatement.setString(1, requestedUnitRange.substring(1,requestedUnitRange.length()-1));
+            preparedStatementCountSQL.setString(1, requestedUnitRange.substring(1,requestedUnitRange.length()-1));
             ResultSet rs = preparedStatement.executeQuery();
+
             ArrayList<ArrayList<Long>> TwoDResultList = new ArrayList<ArrayList<Long>>();
-            System.out.println("rs.getRow()"+rs.getRow());
+
             while(rs.next()){
-//                stringList = new ArrayList<>( Arrays.asList((String[]) rs.getArray("di").getArray()));
-                    System.out.println(Arrays.asList((String[]) rs.getArray("di").getArray()));
-////                ArrayList<Long> resultIntList = new ArrayList<Long>();
-////                for(String stringValue: stringList) {
-////                    try {
-////                        //Convert String to long, and store it into long array list.
-////                        resultIntList.add(Long.parseLong(stringValue));
-////                    } catch(NumberFormatException nfe) {
-////                        System.out.println("Could not parse " + nfe);
-//////                        Log.w("NumberFormat", "Parsing failed! " + stringValue + " can not be an integer");
-////                    }
-////                }
-////                TwoDResultList.add(resultIntList);
-//            }
-//            ArrayList<Long> sum = new ArrayList<Long>(TwoDResultList.get(0).size());
-//            for(ArrayList<Long> sg: TwoDResultList){
-//                for(int i = 0; i < sg.size(); i++){
-//                    sum.set(i,sum.get(i)+sg.get(i));
-//                }
+                stringList = new ArrayList<>( Arrays.asList((String[]) rs.getArray("di").getArray()));
+                System.out.println(Arrays.asList((String[]) rs.getArray("di").getArray()));
+                ArrayList<Long> resultIntList = new ArrayList<Long>();
+                for(String stringValue: stringList) {
+                    try {
+                        //Convert String to long, and store it into long array list.
+                        resultIntList.add(Long.parseLong(stringValue));
+                    } catch(NumberFormatException nfe) {
+                        System.out.println("Could not parse " + nfe);
+//                        Log.w("NumberFormat", "Parsing failed! " + stringValue + " can not be an integer");
+                    }
+                }
+                TwoDResultList.add(resultIntList);
             }
+
             rs.close();
 //
-//            ResultSet rsCount = preparedStatementCount.executeQuery();
-//            int countForRequestUnit = 0;
-//            while(rsCount.next()){
-//                countForRequestUnit = rsCount.getInt(0);
-//            }
-//            HttpPost request = new HttpPost("http://localhost:" + "8080/api/v1/server/samplesumcount");
-//            ResponseSumCount responseSumCount = new ResponseSumCount(sum, countForRequestUnit);
-//            ObjectMapper mapper = new ObjectMapper();
-//            mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
-//            StringEntity json = new StringEntity(mapper.writeValueAsString(responseSumCount), ContentType.APPLICATION_JSON);
-//            request.setEntity(json);
-//            CloseableHttpResponse response = httpClient.execute(request);
-//            if(response.getStatusLine().getStatusCode() != 200){
-//                System.out.println("requested rcViTuples not added! "+response.getStatusLine().getStatusCode() );
-//            }
+            ResultSet rsCount = preparedStatementCountSQL.executeQuery();
+            int countForRequestUnit = 0;
+            while(rsCount.next()){
+                countForRequestUnit = rsCount.getInt(1);
+                System.out.println("countForRequestUnit"+countForRequestUnit);
+            }
+
+            ArrayList<Long> sum = new ArrayList<Long>(TwoDResultList.get(0).size());
+            for(int i = 0; i<TwoDResultList.get(0).size(); i++){
+                sum.add(i,0L);
+            }
+            for(ArrayList<Long> sg: TwoDResultList){
+                for(int i = 0; i < sg.size(); i++){
+                    sum.set(i,sum.get(i)+sg.get(i));
+                }
+            }
+
+            HttpPost request = new HttpPost("http://localhost:" + "8080/api/v1/server/samplesumcount");
+            ResponseSumCount responseSumCount = new ResponseSumCount(sum, countForRequestUnit);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
+            StringEntity json = new StringEntity(mapper.writeValueAsString(responseSumCount), ContentType.APPLICATION_JSON);
+            request.setEntity(json);
+            CloseableHttpResponse response = httpClient.execute(request);
+            if(response.getStatusLine().getStatusCode() != 200){
+                System.out.println("requested rcViTuples not added! "+response.getStatusLine().getStatusCode() );
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-//        catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 
