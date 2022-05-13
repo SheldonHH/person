@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 # You'll obviously need to reshape the output for plotting, e.g:
 
-def twoD_Gaussian((x, y), amplitude, xo, yo, sigma_x, sigma_y, theta, offset):
+def twoD_Gaussian(x, y, amplitude, xo, yo, sigma_x, sigma_y, theta, offset):
     xo = float(xo)
     yo = float(yo)
     a = (np.cos(theta)**2)/(2*sigma_x**2) + (np.sin(theta)**2)/(2*sigma_y**2)
@@ -34,7 +34,7 @@ data_noisy = data + 0.2*np.random.normal(size=data.shape)
 
 popt, pcov = curve_fit(twoD_Gaussian, (x, y), data_noisy, p0=initial_guess)
 # And plot the results:
-print popt
+print(popt)
 
 data_fitted = twoD_Gaussian((x, y), *popt)
 #
