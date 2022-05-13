@@ -1,7 +1,6 @@
 package com.example.demo.api;
 
-import com.example.demo.model.P_SumandCountforUnit;
-import com.example.demo.model.P_VifromSQMatrix;
+import com.example.demo.model.vmatrixhash.P_VifromSQMatrix;
 import com.example.demo.model.Person;
 import com.example.demo.service.PersonService;
 import lombok.NonNull;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RequestMapping("api/v1/person")

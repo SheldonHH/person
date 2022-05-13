@@ -1,15 +1,12 @@
 package com.example.demo.service;
 
 import com.example.demo.dao.PersonDao;
-import com.example.demo.model.P_SumandCountforUnit;
-import com.example.demo.model.P_VifromSQMatrix;
+import com.example.demo.model.vmatrixhash.P_VifromSQMatrix;
 import com.example.demo.model.Person;
-import com.example.demo.model.RCVisTuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

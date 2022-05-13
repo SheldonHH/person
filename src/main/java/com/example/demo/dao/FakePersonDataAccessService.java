@@ -1,9 +1,7 @@
 package com.example.demo.dao;
 
-import com.example.demo.model.P_SumandCountforUnit;
-import com.example.demo.model.P_VifromSQMatrix;
+import com.example.demo.model.vmatrixhash.P_VifromSQMatrix;
 import com.example.demo.model.Person;
-import com.example.demo.model.RCVisTuple;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

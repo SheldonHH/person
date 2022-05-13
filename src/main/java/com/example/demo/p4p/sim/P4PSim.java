@@ -43,6 +43,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.example.demo.model.*;
+import com.example.demo.model.gauss.BoundforGauss;
+import com.example.demo.model.vmatrixhash.RowColTreeHMaps;
 import com.example.demo.p4p.user.UserVector2;
 import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.StopWatch;
@@ -572,30 +574,11 @@ public class P4PSim extends P4PParameters {
                         double l2 = (double) L * delta;
 
 // 1️⃣. Generate Data & 🌛UserVector2
-
 //                    data = Util.randVector(m, F, l2);
                         UserVector2 uv = new UserVector2(data, F, l, g, h);
 // UserVector2(data, F, l, g, h)
 // 2️⃣. Shares: u, v
                         uv.generateShares();
-//                        try {
-//                            Socket socketConnection = new Socket("127.0.0.1", 8800);
-//                            DataOutputStream outToServer = new DataOutputStream(socketConnection.getOutputStream());
-//                            System.out.println(uv.getU());
-//
-//
-//
-//                            outToServer.writeUTF(Arrays.toString(uv.getV()));
-//
-//                            Socket socketConnection_peer = new Socket("127.0.0.1", 8801);
-//                            DataOutputStream outToSpeer = new DataOutputStream(socketConnection_peer.getOutputStream());
-//                            System.out.println(uv.getV());
-//                            outToSpeer.writeUTF(Arrays.toString(uv.getV()));
-//                        } catch (Exception e) {
-//                            System.out.println(e);
-//                        }
-
-
 // 2.1 Set checkCoVector through server challenge_vector for each user 🐢
                         uv.setChecksumCoefficientVectors(server.getChallengeVectors());
 
@@ -612,25 +595,9 @@ public class P4PSim extends P4PParameters {
 // 2.2 server.setUV(U),
                         server.setUserVector(i, uv.getU());
 // 2.3 server.setProof
-
-//                        String jsonString = "";
-//                        GsonBuilder builder = new GsonBuilder();
-//                        builder.setPrettyPrinting();
-//                        Gson gson = builder.create();
-//                        UserVector2.L2NormBoundProof2 serverProof_gou = gson.fromJson(jsonString, UserVector2.L2NormBoundProof2.class);
-//                        String jsonString_serverProof = gson.toJson(serverProof);
-//                        try {
-//                            Socket socketConnection = new Socket("127.0.0.1", 8880);
-//                            ObjectOutputStream outToServer1 = new ObjectOutputStream(socketConnection.getOutputStream());
-//                            outToServer1.writeObject(serverProof);
-//                        } catch (Exception e) {
-//                            System.out.println(e);
-//                        }
-//                        Gson gson = new Gson();
-//                        String json_serverProof = gson.toJson(serverProof);
                         server.setProof(i, serverProof);
                         HttpPost request = new HttpPost("http://localhost:8080/api/v1/server/uiandproof");
-                        UiandProof uiandProof = new UiandProof(userid, uv.getU(),serverProof);
+                        UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(), serverProof);
 
                         ObjectMapper mapper = new ObjectMapper();
                         mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);

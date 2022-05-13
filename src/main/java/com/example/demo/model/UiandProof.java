@@ -4,20 +4,29 @@ import com.example.demo.p4p.user.UserVector2;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigInteger;
 import java.util.UUID;
 
 public class UiandProof {
     private UUID userid;
     private long[] ui;
+    private BigInteger[] Y;
     private UserVector2.L2NormBoundProof2 serverProof;
-
     @JsonCreator
-    public UiandProof(@JsonProperty("userid") UUID userid, @JsonProperty("ui") long[] ui,@JsonProperty("serverProof") UserVector2.L2NormBoundProof2 serverProof) {
+    public UiandProof(@JsonProperty("userid") UUID userid, @JsonProperty("ui") long[] ui, @JsonProperty("Y") BigInteger[] Y,@JsonProperty("serverProof")  UserVector2.L2NormBoundProof2 serverProof) {
         this.userid = userid;
         this.ui = ui;
+        this.Y = Y;
         this.serverProof = serverProof;
     }
 
+    public BigInteger[] getY() {
+        return Y;
+    }
+
+    public void setY(BigInteger[] y) {
+        Y = y;
+    }
 
     public UUID getUserid() {
         return userid;

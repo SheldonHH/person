@@ -1,6 +1,9 @@
 package com.example.demo.dao;
 
 import com.example.demo.model.*;
+import com.example.demo.model.gauss.ResponseSumCount;
+import com.example.demo.model.vmatrixhash.P_VifromSQMatrix;
+import com.example.demo.model.vmatrixhash.ResponseVRowCol;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
