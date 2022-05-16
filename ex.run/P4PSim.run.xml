@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="P4PSim" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="com.example.demo.p4p.sim.P4PSim" />
+    <module name="person1" />
+    <option name="PROGRAM_PARAMETERS" value="&quot;$PROJECT_DIR$/src/main/resources/data_sample/user_1_data.csv&quot;" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.example.demo.p4p.sim.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

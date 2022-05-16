@@ -40,6 +40,8 @@ import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.StopWatch;
 import com.example.demo.p4p.util.Util;
 import com.example.demo.net.i2p.util.NativeBigInteger;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A 3-Way commitment is a commitment that contains one of three values 
@@ -63,15 +65,14 @@ import com.example.demo.net.i2p.util.NativeBigInteger;
 public class ThreeWayCommitment extends Commitment implements Serializable{
     private static final long serialVersionUID = 6529685098267757690L;
     public final NativeBigInteger CONST;    // The public constant
-
     public ThreeWayCommitment(NativeBigInteger g, NativeBigInteger h,
                               BigInteger c) {
         super(g, h);
         this.CONST = new NativeBigInteger(c.abs());
     }
 
-    public ThreeWayCommitment(NativeBigInteger g, NativeBigInteger h,
-                              long c) {
+    public ThreeWayCommitment(@JsonProperty("g") NativeBigInteger g, @JsonProperty("h")NativeBigInteger h,
+                              @JsonProperty("c") long c) {
         super(g, h);
         this.CONST = new NativeBigInteger(new BigInteger(String.valueOf(c)).abs());
     }
@@ -157,6 +158,7 @@ public class ThreeWayCommitment extends Commitment implements Serializable{
         private BitCommitment.BitCommitmentProof bcp1 = null;
         private BitCommitment.BitCommitmentProof bcp2 = null;
 
+        @JsonCreator
         public ThreeWayCommitmentProof() { super(); }
 
         // Construct the ZKP that the commitment contains 0,or +/-c

@@ -35,6 +35,7 @@ import java.math.BigInteger;
 
 import com.example.demo.p4p.user.UserVector2;
 import com.example.demo.p4p.util.P4PParameters;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -77,9 +78,9 @@ public abstract class Proof extends P4PParameters {
     /**
      * The third message in the proof.
      */
-
+    @JsonCreator
     public Proof() {}
-
+    @JsonCreator
     public Proof(BigInteger[] commitment, BigInteger[] challenge,
                  BigInteger[] response) {
         this.commitment = commitment;

@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.p4p.crypto.ThreeWayCommitment;
 import com.example.demo.p4p.user.UserVector2;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,13 +13,23 @@ public class UiandProof {
     private long[] ui;
     private BigInteger[] Y;
     private UserVector2.L2NormBoundProof2 serverProof;
+    //    private ThreeWayCommitment.ThreeWayCommitmentProof[] tcProof;
     @JsonCreator
     public UiandProof(@JsonProperty("userid") UUID userid, @JsonProperty("ui") long[] ui, @JsonProperty("Y") BigInteger[] Y,@JsonProperty("serverProof")  UserVector2.L2NormBoundProof2 serverProof) {
         this.userid = userid;
         this.ui = ui;
         this.Y = Y;
         this.serverProof = serverProof;
+//        this.tcProof = tcProof;
     }
+
+//    public ThreeWayCommitment.ThreeWayCommitmentProof[] getTcProof() {
+//        return tcProof;
+//    }
+
+//    public void setTcProof(ThreeWayCommitment.ThreeWayCommitmentProof[] tcProof) {
+//        this.tcProof = tcProof;
+//    }
 
     public BigInteger[] getY() {
         return Y;

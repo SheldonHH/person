@@ -8,7 +8,7 @@ public class P4PPeer {
 
 //    protected int m = -1;            // The dimension of user vector
 //    protected long F = -1;
-    protected int m = 3;            // The dimension of user vector
+    protected int m = 2;            // The dimension of user vector
     protected long F = 3871393383742833983L;
     /**
      * The order of the (small) finite field over which all the computations

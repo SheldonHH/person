@@ -38,14 +38,16 @@ import java.math.BigInteger;
 import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.Util;
 import com.example.demo.net.i2p.util.NativeBigInteger;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *
- * This is a commitment scheme based on Pedersen's discrete log-based 
+ * This is a commitment scheme based on Pedersen's discrete log-based
  * commitment scheme:
  * <p>
- *    <i>Torben Pryds Pedersen, Non-interactive and Information-Theoretic Secure 
- *    Verifiable Secret Sharing, CRYPTO 91, Lecture Notes in Computer Science, 
+ *    <i>Torben Pryds Pedersen, Non-interactive and Information-Theoretic Secure
+ *    Verifiable Secret Sharing, CRYPTO 91, Lecture Notes in Computer Science,
  *    Volume 576, Jan 1992, Page 129.</i>
  * <p>
  * @author ET 08/28/2005
@@ -53,8 +55,9 @@ import com.example.demo.net.i2p.util.NativeBigInteger;
 
 public class Commitment extends P4PParameters implements Serializable {
     private static final long serialVersionUID = 6529685098267757690L;
-    protected NativeBigInteger g = new NativeBigInteger("3182089256208329047054709904358973599639052582169128376753217579641056697166499158386824120768854848163132851742558842187976312344846648732546791352223868");
-    protected NativeBigInteger h = new NativeBigInteger("9793143674503176705343368747667288665355699962542491643750752248068073537700661368128860976203407269976279596607505206660360515029147205303637405777467078");
+    protected NativeBigInteger g = new NativeBigInteger("3459276026518079674568408512735917085876933054878224377582397778495423201743627684916338757642004215208935956214764216182555928533733818616652879775932081");
+    protected NativeBigInteger h = new NativeBigInteger("1815409602493030510804268646246184547552449386433387561905816534248675443892847368541434018303659631380097127756952567150690215332149993674119991116919571")
+            ;
 
     /**
      * verify that the parameters are correct.
@@ -82,7 +85,8 @@ public class Commitment extends P4PParameters implements Serializable {
 
     /**
      */
-    public Commitment(NativeBigInteger g, NativeBigInteger h) {
+    @JsonCreator
+    public Commitment(@JsonProperty("g") NativeBigInteger g,@JsonProperty("h") NativeBigInteger h) {
         this.g = g;
         this.h = h;
         sanityCheck();

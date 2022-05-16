@@ -45,6 +45,10 @@ import java.util.stream.Collectors;
 import com.example.demo.model.*;
 import com.example.demo.model.gauss.BoundforGauss;
 import com.example.demo.model.vmatrixhash.RowColTreeHMaps;
+import com.example.demo.p4p.crypto.BitCommitment;
+import com.example.demo.p4p.crypto.Proof;
+import com.example.demo.p4p.crypto.SquareCommitment;
+import com.example.demo.p4p.crypto.ThreeWayCommitment;
 import com.example.demo.p4p.user.UserVector2;
 import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.StopWatch;
@@ -52,6 +56,7 @@ import com.example.demo.net.i2p.util.NativeBigInteger;
 
 import com.example.demo.p4p.peer.P4PPeer;
 import com.example.demo.p4p.server.P4PServer;
+import com.example.demo.util.InputStreamConsumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -84,7 +89,7 @@ public class P4PSim extends P4PParameters {
 
     static UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
     private static int k = 512;     // Security parameter
-    private static int m = 3;      // User vector dimension
+    private static int m = 2;      // User vector dimension
     private static int n = 1;      // Number of users
     private static int l = 40;      // Bit length of L
     final static CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -111,6 +116,25 @@ public class P4PSim extends P4PParameters {
 
     public static int sqWidth(double israel){
         return (int)Math.ceil(Math.sqrt(israel));
+    }
+
+    public static void truncatediunitRange(){
+        String SQL = "TRUNCATE TABLE diunitrange; ";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL,
+                     Statement.RETURN_GENERATED_KEYS)) {
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    System.out.println(rs);
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static void truncateHashList(){
@@ -372,7 +396,29 @@ public class P4PSim extends P4PParameters {
         }
        return dimension+":"+LowerRange+"-"+UpperRange;
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder("/Users/mac/opt/anaconda3/bin/python3 /Users/mac/singapore/person1/src/main/python/2D_KL.py");
+        System.out.println(args[0]);
+        if(args[0].equals("/Users/mac/singapore/person1/src/main/resources/data_sample/user_1_data.csv")){
+            System.out.println("yesssss!!!!!~!");
+        }
+//        pb.directory(new File("src"));
+        Process p = null;
+        try {
+            p = pb.start();
+            InputStreamConsumer consumer = new InputStreamConsumer(p.getInputStream());
+            consumer.start();
+            int result = p.waitFor();
+            consumer.join();
+            System.out.println(consumer.getOutput());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         readGaussParams();
 //        double israel = 70;
 //        printMatrix(israel);
@@ -381,6 +427,7 @@ public class P4PSim extends P4PParameters {
         long maxX1=Long.MIN_VALUE, maxX2=Long.MIN_VALUE, minX1=Long.MAX_VALUE, minX2=Long.MAX_VALUE;
         truncateHMatrixDB();
         truncateHashList();
+        truncatediunitRange();
 
         ArrayList<String> rangeforX12s = new ArrayList<String>();
         int nLoops = 1;
@@ -476,13 +523,13 @@ public class P4PSim extends P4PParameters {
         int num_of_element = 12;
         // Generate the data and the checksum coefficient vector:
         try {
-            String fileName = "/Users/mac/Desktop/FedBFT/voting/output.txt";
+            String fileName = "/Users/mac/singapore/person1/src/main/resources/data_sample/user_1_data.csv";
             File myObj = new File(fileName);
             Path path = Paths.get(fileName);
             long dataLineNum = 0;
             System.out.println("sqWidth:"+sqWidth(dataLineNum));
             try {
-                dataLineNum = Files.lines(path).count();
+                dataLineNum = Files.lines(path).skip(1).count();
                 num_of_element = Math.toIntExact(dataLineNum);
             } catch (IOException e) {
                 System.out.println("error of read line");
@@ -490,14 +537,16 @@ public class P4PSim extends P4PParameters {
             System.out.println("dataLineNum: " + dataLineNum);
             Scanner myReader = new Scanner(myObj);
             long lineNum = 0;
+            myReader.nextLine();
             while (myReader.hasNextLine()) {
                 String rangeforX1="", rangeforX2="";
                 String strdata = myReader.nextLine();
-                m = strdata.length();
+                String[] arrOfStr = strdata.split(",");
                 long[] data = new long[m];
-                char[] charArray = strdata.toCharArray();
+//                char[] charArray = strdata.toCharArray();
                 for (int did = 0; did < m; did++) {
-                    long a = charArray[did] - '0';
+                    double a_double = Double.parseDouble(arrOfStr[did]);
+                    long a = (long) a_double;
                     data[did] = a;
                     if(did == 0){
                         if(a > maxX1){
@@ -508,7 +557,6 @@ public class P4PSim extends P4PParameters {
                         }
                         rangeforX1 = findRange("X1",a);
                     }
-
                     if(did == 1){
                         if(a > maxX2){
                             maxX2=a;
@@ -597,9 +645,14 @@ public class P4PSim extends P4PParameters {
 // 2.3 server.setProof
                         server.setProof(i, serverProof);
                         HttpPost request = new HttpPost("http://localhost:8080/api/v1/server/uiandproof");
-                        UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(), serverProof);
+                        uv.setForServer(true);
+                        System.out.println("isForServer: "+serverProof.isForServer());
+                        UserVector2.L2NormBoundProof2 newServerProof = serverProof;
+                        System.out.println("newServerProof.tcProof"+newServerProof.getThreeWayCommitmentProofs());
+                        UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(), newServerProof);
 
                         ObjectMapper mapper = new ObjectMapper();
+                        mapper.registerSubtypes(ThreeWayCommitment.ThreeWayCommitmentProof.class, Proof.class, BitCommitment.BitCommitmentProof.class, SquareCommitment.SquareCommitmentProof.class);
                         mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
                         StringEntity json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
                         request.setEntity(json);
@@ -610,6 +663,8 @@ public class P4PSim extends P4PParameters {
 
 
                         HttpPost request_viProof = new HttpPost("http://localhost:9001/api/v1/peer/viandproof");
+                        uv.setForServer(false); // since Proof is a self-circuited class
+                        System.out.println("peer isForServer: "+serverProof.isForServer());
                         ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof);
                         StringEntity vi_json = new StringEntity(mapper.writeValueAsString(viandProof), ContentType.APPLICATION_JSON);
                         request_viProof.setEntity(vi_json);
@@ -762,4 +817,6 @@ public class P4PSim extends P4PParameters {
 //            System.out.println("finishVi is not sent! "+response_viProof.getStatusLine().getStatusCode() );
 //        }
     }
+
+
 }

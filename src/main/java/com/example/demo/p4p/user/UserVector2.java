@@ -329,6 +329,7 @@ public class UserVector2 extends UserVector implements Serializable{
                         + " not generated yet.");
 
             serverProof = new L2NormBoundProof2(true);
+            System.out.println("here"+getServerProof().isForServer());
             peerProof =  new L2NormBoundProof2(false);
 
             /** For the server: */
@@ -613,9 +614,23 @@ public class UserVector2 extends UserVector implements Serializable{
             proof = new L2NormBoundProof2(server);
             proof.construct(); // for c.length
         }
+        System.out.println("what"+server);
+        System.out.println("proof.getServerProof() "+proof.getServerProof().isForServer());
         return server ? proof.getServerProof() : proof.getPeerProof();
     }
+    public Proof getServerBoundProof2(L2NormBoundProof2 serverProof) {
+        serverProof = new L2NormBoundProof2(true);
+        serverProof.construct();
+        return serverProof;
+    }
 
+    public static void setForServer(boolean forServer) {
+        L2NormBoundProof2.forServer = forServer;
+    }
+
+    public void setProof(L2NormBoundProof2 proof) {
+        this.proof = proof;
+    }
 
     /**
      * The verifier.
