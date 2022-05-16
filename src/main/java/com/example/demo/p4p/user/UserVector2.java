@@ -329,7 +329,7 @@ public class UserVector2 extends UserVector implements Serializable{
                         + " not generated yet.");
 
             serverProof = new L2NormBoundProof2(true);
-            System.out.println("here"+getServerProof().isForServer());
+//            System.out.println("here"+getServerProof().isForServer());
             peerProof =  new L2NormBoundProof2(false);
 
             /** For the server: */

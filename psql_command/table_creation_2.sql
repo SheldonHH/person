@@ -65,9 +65,9 @@ CREATE TABLE PERSON_STATS (
 );
 CREATE TABLE HashList (
                           hash_id UUID PRIMARY KEY,
+                          name UUID NOT NULL,
                           rowOrCol TEXT,
                           index integer,
-                          concatedResult TEXT,
                           HashResult Integer
 );
 ALTER TABLE HashList OWNER TO peer2;

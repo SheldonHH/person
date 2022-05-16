@@ -2,7 +2,7 @@
   <configuration default="false" name="P4PSim" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="com.example.demo.p4p.sim.P4PSim" />
     <module name="person1" />
-    <option name="PROGRAM_PARAMETERS" value="&quot;$PROJECT_DIR$/src/main/resources/data_sample/small_data.csv&quot;" />
+    <option name="PROGRAM_PARAMETERS" value="$PROJECT_DIR$/src/main/python/data_sample/small_data.csv" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.example.demo.p4p.sim.*" />

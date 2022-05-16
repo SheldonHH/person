@@ -44,7 +44,7 @@ ALTER TABLE U_PERSON_DATA OWNER TO server1;
 DROP TABLE V_PERSON_DATA;
 DROP TABLE IF EXISTS person_rc;
 DROP TABLE IF EXISTS PERSON_STATS;
-
+DROP TABLE IF EXISTS HashList;
 CREATE TABLE V_PERSON_DATA (
                                data_id UUID PRIMARY KEY,
                                name VARCHAR ( 50 ) NOT NULL,
@@ -64,9 +64,9 @@ CREATE TABLE PERSON_STATS (
 );
 CREATE TABLE HashList (
                           hash_id UUID PRIMARY KEY,
+                          name UUID NOT NULL,
                           rowOrCol TEXT,
                           index integer,
-                          concatedResult TEXT,
                           HashResult Integer
 );
 ALTER TABLE HashList OWNER TO peer1;

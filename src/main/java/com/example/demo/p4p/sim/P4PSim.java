@@ -276,7 +276,7 @@ public class P4PSim extends P4PParameters {
                     }
                 }
             }
-            HttpPost request = new HttpPost("http://localhost:9001/api/v1/peer/rowcoltreehashmaps");
+            HttpPost request = new HttpPost("http://localhost:9002/api/v1/peer/rowcoltreehashmaps");
             RowColTreeHMaps rowColTreeMaps = new RowColTreeHMaps(userid, colHashMap,rowHashMap);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -529,7 +529,7 @@ public class P4PSim extends P4PParameters {
         int num_of_element = 12;
         // Generate the data and the checksum coefficient vector:
         try {
-            String fileName = "/Users/mac/singapore/person1/src/main/resources/data_sample/user_1_data.csv";
+            String fileName = ""+args[0];
             File myObj = new File(fileName);
             Path path = Paths.get(fileName);
             long dataLineNum = 0;
@@ -668,7 +668,7 @@ public class P4PSim extends P4PParameters {
                         }
 
 
-                        HttpPost request_viProof = new HttpPost("http://localhost:9001/api/v1/peer/viandproof");
+                        HttpPost request_viProof = new HttpPost("http://localhost:9002/api/v1/peer/viandproof");
                         uv.setForServer(false); // since Proof is a self-circuited class
                         System.out.println("peer isForServer: "+serverProof.isForServer());
                         ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof);
@@ -779,7 +779,7 @@ public class P4PSim extends P4PParameters {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
-            HttpPost request_finishVi = new HttpPost("http://localhost:9001/api/v1/peer/finishvi");
+            HttpPost request_finishVi = new HttpPost("http://localhost:9002/api/v1/peer/finishvi");
             StringEntity finishVi_json = null;
             finishVi_json = new StringEntity(mapper.writeValueAsString(new PersonCount(num_of_element, userid)), ContentType.APPLICATION_JSON);
             request_finishVi.setEntity(finishVi_json);
@@ -793,6 +793,8 @@ public class P4PSim extends P4PParameters {
             StringEntity boundforGauss_json = new StringEntity(mapper.writeValueAsString(new BoundforGauss(userid,maxX1,maxX2,minX1,minX2, gauss_params, rangeforX12s)), ContentType.APPLICATION_JSON);
             request_BoundforGauss.setEntity(boundforGauss_json);
             CloseableHttpResponse response_boundforGauss = httpClient.execute(request_BoundforGauss);
+            System.out.println("response_boundforGauss.getEntity()");
+            System.out.println(response_boundforGauss.getEntity());
             if(response_boundforGauss.getStatusLine().getStatusCode() != 200){
                 System.out.println("boundforGauss is not sent! "+response_boundforGauss.getStatusLine().getStatusCode() );
             }
