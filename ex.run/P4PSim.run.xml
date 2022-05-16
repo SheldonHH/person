@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="P4PSim" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="com.example.demo.p4p.sim.P4PSim" />
-    <module name="person1" />
+    <module name="demo" />
     <option name="PROGRAM_PARAMETERS" value="$PROJECT_DIR$/src/main/python/data_sample/small_data.csv" />
     <extension name="coverage">
       <pattern>
