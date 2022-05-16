@@ -20,6 +20,11 @@ public class FakePersonDataAccessService implements PersonDao{
     }
 
     @Override
+    public int finalP4P(byte[] sg){
+        return 0;
+    }
+
+    @Override
     public int insertPerson(Person person) {
         return PersonDao.super.insertPerson(person);
     }

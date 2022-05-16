@@ -5,8 +5,8 @@ from numpy import savetxt
 import pickle
 
 # You'll obviously need to reshape the output for plotting, e.g:
-joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
-joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
+joint_frequency_path1 = '/Users/mac/singapore/person1/src/main/python/data_sample/joint/joint_frequency_1.csv'
+joint_frequency_path2 = '/Users/mac/singapore/person1/src/main/python/data_sample/joint/joint_frequency_2.csv'
 
 
 def twoD_Gaussian(point, amplitude, xo, yo, sigma_x, sigma_y, theta, offset):

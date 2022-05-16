@@ -4,8 +4,8 @@ import numpy as np
 from scipy.spatial import cKDTree as KDTree
 import pandas as pd
 
-joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
-joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
+joint_frequency_path1 = '/Users/mac/singapore/person1/src/main/python/data_sample/joint/joint_frequency_1.csv'
+joint_frequency_path2 = '/Users/mac/singapore/person1/src/main/python/data_sample/joint/joint_frequency_2.csv'
 
 
 def KLdivergence(x, y):

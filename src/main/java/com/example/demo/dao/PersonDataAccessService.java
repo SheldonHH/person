@@ -260,6 +260,18 @@ public class PersonDataAccessService implements PersonDao{
     }
 
     @Override
+    public int finalP4P(byte[] digitalSignature){
+        System.out.print("digitalSignature:");
+        if(digitalSignature == null){
+            System.out.println("none");
+        }else{
+            System.out.println(digitalSignature.toString());
+        }
+
+        return 0;
+    }
+
+    @Override
     public int updatePersonById(UUID id, Person update) {
         return selectPersonById(id)
                 .map(p -> {

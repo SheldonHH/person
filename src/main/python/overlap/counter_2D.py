@@ -1,8 +1,8 @@
 from collections import Counter
 import pandas as pd
 import csv
-trimmed_data_path = 'data_sample/trimmed_user_1_data.csv'
-data_frequency_path = 'data_sample/frequency_user_1_data.csv'
+trimmed_data_path = '/Users/mac/singapore/person1/src/main/python/data_sample/trimmed_user_1_data.csv'
+data_frequency_path = '/Users/mac/singapore/person1/src/main/python/data_sample/frequency_user_1_data.csv'
 
 
 def read_from_csv():

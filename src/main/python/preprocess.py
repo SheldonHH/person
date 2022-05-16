@@ -1,10 +1,11 @@
 import csv
+import sys
 import json
-raw_data_path1 = 'data_sample/user_1_data.csv'
-raw_data_path2 = 'data_sample/user_2_data.csv'
-w_trimmed_data_path1 = 'data_sample/trimmed/trimmed_user_1_data.csv'
-w_trimmed_data_path2 = 'data_sample/trimmed/trimmed_user_2_data.csv'
-w_first_dict_json_path = 'data_sample/dict/first_dict_data.json'
+raw_data_path1 = '/Users/mac/singapore/person1/src/main/python/data_sample/user_1_data.csv'
+raw_data_path2 = '/Users/mac/singapore/person1/src/main/python/data_sample/user_2_data.csv'
+w_trimmed_data_path1 = '/Users/mac/singapore/person1/src/main/python/data_sample/trimmed/trimmed_user_1_data.csv'
+w_trimmed_data_path2 = '/Users/mac/singapore/person1/src/main/python/data_sample/trimmed/trimmed_user_2_data.csv'
+w_first_dict_json_path = '/Users/mac/singapore/person1/src/main/python/data_sample/dict/first_dict_data.json'
 first_layer_dict = {}
 
 
@@ -73,6 +74,8 @@ def read_from_csv(raw_data_path, trimmed_data_path):
 
 
 def main():
+    args = sys.argv[1:]
+#     raw_data_path1 = ''.join(args)
     read_from_csv(raw_data_path1, w_trimmed_data_path1)
     read_from_csv(raw_data_path2, w_trimmed_data_path2)
 

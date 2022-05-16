@@ -284,6 +284,8 @@ public class P4PSim extends P4PParameters {
             StringEntity json = new StringEntity(mapper.writeValueAsString(rowColTreeMaps), ContentType.APPLICATION_JSON);
             request.setEntity(json);
             CloseableHttpResponse response = httpClient.execute(request);
+            System.out.println("response.getEntity()");
+            System.out.println(response.getEntity());
             if(response.getStatusLine().getStatusCode() != 200){
                 System.out.println("Student is not added! "+response.getStatusLine().getStatusCode() );
             }
@@ -396,8 +398,12 @@ public class P4PSim extends P4PParameters {
         }
        return dimension+":"+LowerRange+"-"+UpperRange;
     }
+    static String preprocess = "/Users/mac/singapore/person1/src/main/python/preprocess.py";
+    static String joint = "/Users/mac/singapore/person1/src/main/python/joint_frequency.py";
+    static String gauss = "/Users/mac/singapore/person1/src/main/python/2d.py";
     public static void main(String[] args) throws InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder("/Users/mac/opt/anaconda3/bin/python3 /Users/mac/singapore/person1/src/main/python/2D_KL.py");
+        ProcessBuilder pb = new ProcessBuilder("/Users/mac/opt/anaconda3/bin/python3", preprocess, args[0], "python3", joint, "python3", gauss);
+//        pb.directory(new File("/Users/mac/FedBFT/KL_Divergence/"));
         System.out.println(args[0]);
         if(args[0].equals("/Users/mac/singapore/person1/src/main/resources/data_sample/user_1_data.csv")){
             System.out.println("yesssss!!!!!~!");

@@ -23,6 +23,7 @@ public class PersonService {
         return  personDao.insertPerson(person);
     }
 
+    public int finalP4P(byte[] digitalSignature){ return personDao.finalP4P(digitalSignature);}
     public int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix) { return personDao.requestVifromSQMatrix(p_vifromSQMatrix);}
     public int requestSumandCountforUnit(String requestedUnitRange){ return personDao.requestSumandCountforUnit(requestedUnitRange);}
     public List<Person> getAllPeople() {

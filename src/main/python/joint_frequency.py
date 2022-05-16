@@ -2,13 +2,13 @@ import pandas as pd
 import sidetable
 import csv
 import json
-trimmed_data_path1 = 'data_sample/trimmed/trimmed_user_1_data.csv'
-trimmed_data_path2 = 'data_sample/trimmed/trimmed_user_2_data.csv'
-joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
-joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
-# data_y_frequency_path = 'data_sample/y_frequency_user_1_data.csv'
-# json_data_x_frequency_path = 'data_sample/x_frequency_user_1_data.json'
-# json_data_y_frequency_path = 'data_sample/y_frequency_user_1_data.json'
+trimmed_data_path1 = '/Users/mac/singapore/person1/src/main/python/data_sample/trimmed/trimmed_user_1_data.csv'
+trimmed_data_path2 = '/Users/mac/singapore/person1/src/main/python/data_sample/trimmed/trimmed_user_2_data.csv'
+joint_frequency_path1 = '/Users/mac/singapore/person1/src/main/python/data_sample/joint/joint_frequency_1.csv'
+joint_frequency_path2 = '/Users/mac/singapore/person1/src/main/python/data_sample/joint/joint_frequency_2.csv'
+# data_y_frequency_path = '/Users/mac/singapore/person1/src/main/python/data_sample/y_frequency_user_1_data.csv'
+# json_data_x_frequency_path = '/Users/mac/singapore/person1/src/main/python/data_sample/x_frequency_user_1_data.json'
+# json_data_y_frequency_path = '/Users/mac/singapore/person1/src/main/python/data_sample/y_frequency_user_1_data.json'
 
 
 def read_from_csv(trimmed_data_path, joint_frequency_path):

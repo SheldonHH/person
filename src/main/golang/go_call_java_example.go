@@ -1,13 +1,18 @@
-package main
-
 import (
     "os/exec"
+    "fmt"
 )
-string data_path = "/root/user_data1.csv"
-string jar_path = "p4p.jar"
+var data_path = "/root/user_data1.csv"
+var jar_path = "/root/P4P/P4P.jar"
+
 func main() {
-    cmd := exec.Command("java", "-jar",jar_path, data_path)
-    if err := cmd.Run(); err != nil {
-        log.Fatal(err)
+    cmd := exec.Command("java", "-jar",jar_path, "sg")
+    stdout, err := cmd.Output()
+    if err != nil {
+        fmt.Println(err.Error())
+        return
     }
+
+    // Print the output
+    fmt.Println(string(stdout))
 }

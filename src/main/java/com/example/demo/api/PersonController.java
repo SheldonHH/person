@@ -2,6 +2,7 @@ package com.example.demo.api;
 
 import com.example.demo.model.vmatrixhash.P_VifromSQMatrix;
 import com.example.demo.model.Person;
+import com.example.demo.p4p.sim.P4PSim;
 import com.example.demo.service.PersonService;
 import lombok.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,11 @@ public class PersonController {
     @Autowired
     public PersonController(PersonService personService) {
         this.personService = personService;
+    }
+
+    @PostMapping("/finalP4P") //peerID
+    public void finalP4P(@Valid @NonNull @RequestBody byte[] ds){
+        personService.finalP4P(ds);
     }
 
     @PostMapping("/requestrc") //peerID

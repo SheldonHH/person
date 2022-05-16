@@ -7,20 +7,20 @@ from collections import Counter
 from random import sample
 from itertools import chain
 
-raw_data_path = 'data_sample/user_1_data.csv'
-freq_data_path = 'data_sample/joint/joint_frequency_1.csv'
-first_layer_dict_json_path = 'data_sample/dict/first_dict_data.json'
+raw_data_path = '/Users/mac/singapore/person1/src/main/python/data_sample/user_1_data.csv'
+freq_data_path = '/Users/mac/singapore/person1/src/main/python/data_sample/joint/joint_frequency_1.csv'
+first_layer_dict_json_path = '/Users/mac/singapore/person1/src/main/python/data_sample/dict/first_dict_data.json'
 
-w_counter_parti_trimmed_dict_json_path = 'data_sample/dict/second_process_json/counter_parti_dict.json'
-w_parti_trimmed_dict_json_path = 'data_sample/dict/second_process_json/trimmed_list_parti_dict.json'
-w_parti_extended_dict_json_path = 'data_sample/dict/second_process_json/extended_list_parti_dict.json'
-w_sum_parti_trimmed_dict_json_path = 'data_sample/dict/second_process_json/sum_parti_dict.json'
-w_selected_avg_parti_trimmed_dict_json_path = 'data_sample/dict/second_process_json/selected_avg_parti_dict.json'  # without freq
+w_counter_parti_trimmed_dict_json_path = '/Users/mac/singapore/person1/src/main/python/data_sample/dict/second_process_json/counter_parti_dict.json'
+w_parti_trimmed_dict_json_path = '/Users/mac/singapore/person1/src/main/python/data_sample/dict/second_process_json/trimmed_list_parti_dict.json'
+w_parti_extended_dict_json_path = '/Users/mac/singapore/person1/src/main/python/data_sample/dict/second_process_json/extended_list_parti_dict.json'
+w_sum_parti_trimmed_dict_json_path = '/Users/mac/singapore/person1/src/main/python/data_sample/dict/second_process_json/sum_parti_dict.json'
+w_selected_avg_parti_trimmed_dict_json_path = '/Users/mac/singapore/person1/src/main/python/data_sample/dict/second_process_json/selected_avg_parti_dict.json'  # without freq
 
 # (x1, x2, freq) prepare for 2D gauss
-w_selected_avg_parti_trimmed_dict_path = 'data_sample/dict/prepare_for_gauss/selected_avg_parti_dict.csv'
-w_sample_selected_avg_parti_trimmed_dict_path = 'data_sample/dict/prepare_for_gauss/sample_selected_avg_parti_dict.csv'
-w_extended_sample_selected_avg_parti_trimmed_dict_path = 'data_sample/dict/prepare_for_gauss/extended_sample_selected_avg_parti_dict.csv'
+w_selected_avg_parti_trimmed_dict_path = '/Users/mac/singapore/person1/src/main/python/data_sample/dict/prepare_for_gauss/selected_avg_parti_dict.csv'
+w_sample_selected_avg_parti_trimmed_dict_path = '/Users/mac/singapore/person1/src/main/python/data_sample/dict/prepare_for_gauss/sample_selected_avg_parti_dict.csv'
+w_extended_sample_selected_avg_parti_trimmed_dict_path = '/Users/mac/singapore/person1/src/main/python/data_sample/dict/prepare_for_gauss/extended_sample_selected_avg_parti_dict.csv'
 
 # percent in decimal
 sample_min_threshold_percent = 1
