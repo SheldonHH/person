@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import uploadingfiles.StorageService;
 
 import javax.validation.Valid;
+import java.sql.*;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -35,11 +39,11 @@ public class PersonController {
         this.personService = personService;
     }
 
-    @GetMapping("start/{path}")
-    public int start(@PathVariable("path") String path){
-        System.out.println(path);
+    @GetMapping("/st")
+    @ResponseBody
+    public int stt(){
 //        try {
-            System.out.println("sg");
+        System.out.println("sg");
 //            P4PSim.main(new String[]{"/Users/mac/singapore/person1/src/main/python/data_sample"});
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
@@ -48,8 +52,23 @@ public class PersonController {
     }
 
 
+    @GetMapping("{datapath}")
+//    @ResponseBody
+    public String start(@PathVariable("datapath") String datapath){
+        System.out.println(datapath);
+        String correct_data_path = datapath.replace("!","/");
+//        try {
+//            System.out.println("israel");
+//            P4PSim.main(new String[]{correct_data_path.split("=")[1]});
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        return personService.checkFinal();
+    }
+
+
     @PostMapping("/p4psim") //peerID
-    public void p4pSim(@Valid @NonNull @RequestBody String ds){
+    public String p4pSim(@Valid @NonNull @RequestBody String ds){
         String raw_data_path = ds.substring(ds.indexOf("\"",8)+1, ds.length()-2);
         System.out.println(raw_data_path);
         try {
@@ -57,6 +76,7 @@ public class PersonController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return "Signature";
     }
 
 
@@ -86,13 +106,15 @@ public class PersonController {
 //    }
 
     // localhost:8080/api/v1/person/
-    @GetMapping(path = "{id}")
-    public  Person getPersonById(UUID id){
-        return personService.getPersonById(id)
-                .orElse(null);
+//    @GetMapping(path = "{id}")
+//    public  Person getPersonById(UUID id){
+//        System.out.println(id.toString());
+//        return personService.getPersonById(id)
+//                .orElse(null);
 // Optional: a container object which may or may not contain a non-null value. If a value is present, isPresent() will return true and get() will return the value.
 //        Return the value if present, otherwise return other.
-    }
+//        return null;
+//    }
 
     @DeleteMapping(path="{id}")
     public void deletePersonById(@PathVariable("id") UUID id){

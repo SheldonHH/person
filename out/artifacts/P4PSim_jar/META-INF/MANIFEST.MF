@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Created-By: Maven JAR Plugin 3.2.2
-Build-Jdk-Spec: 17
-Implementation-Title: P4PSim
-Implementation-Version: 0.0.1-SNAPSHOT
-Main-Class: com.example.demo.p4p.sim.P4PSim
-Start-Class: com.example.demo.p4p.sim.P4PSim
-
-

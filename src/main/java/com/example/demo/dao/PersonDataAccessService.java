@@ -7,12 +7,16 @@ import com.example.demo.model.vmatrixhash.ResponseVRowCol;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -218,6 +222,23 @@ public class PersonDataAccessService implements PersonDao{
         return 0;
     }
 
+    @Override
+    public String checkFinal(){
+        HttpResponse response;
+        String JSONString = "";
+        HttpGet getConnection = new HttpGet("http://localhost:8080/api/v1/server/checkSig");
+        try {
+            response = httpClient.execute(getConnection);
+            JSONString = EntityUtils.toString(response.getEntity(),
+                    "UTF-8");
+//            JSONObject jsonObject = new JSONObject(JSONString); //Assuming it's a JSON Object
+            System.out.println(JSONString);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return JSONString;
+//
+    }
     @Override
     public List<Person> selectAllPeople(){
         List<Person> personList = new ArrayList<>();
