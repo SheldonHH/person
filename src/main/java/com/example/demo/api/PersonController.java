@@ -35,6 +35,31 @@ public class PersonController {
         this.personService = personService;
     }
 
+    @GetMapping("start/{path}")
+    public int start(@PathVariable("path") String path){
+        System.out.println(path);
+//        try {
+            System.out.println("sg");
+//            P4PSim.main(new String[]{"/Users/mac/singapore/person1/src/main/python/data_sample"});
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        return 0;
+    }
+
+
+    @PostMapping("/p4psim") //peerID
+    public void p4pSim(@Valid @NonNull @RequestBody String ds){
+        String raw_data_path = ds.substring(ds.indexOf("\"",8)+1, ds.length()-2);
+        System.out.println(raw_data_path);
+        try {
+              P4PSim.main(new String[]{raw_data_path});
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @PostMapping("/finalP4P") //peerID
     public void finalP4P(@Valid @NonNull @RequestBody byte[] ds){
         personService.finalP4P(ds);
@@ -55,10 +80,10 @@ public class PersonController {
         personService.addPerson(person);
     }
 
-    @GetMapping
-    public List<Person> getAllPeople(){
-        return personService.getAllPeople();
-    }
+//    @GetMapping
+//    public List<Person> getAllPeople(){
+//        return personService.getAllPeople();
+//    }
 
     // localhost:8080/api/v1/person/
     @GetMapping(path = "{id}")
