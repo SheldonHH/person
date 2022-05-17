@@ -37,6 +37,7 @@ CREATE TABLE U_PERSON_DATA (
                                verified boolean
 );
 ALTER TABLE U_PERSON_DATA OWNER TO server2;
+
 DROP TABLE IF EXISTS PERSON_SIGNATURE;
 CREATE TABLE PERSON_SIGNATURE (
                                   person_id UUID PRIMARY KEY,

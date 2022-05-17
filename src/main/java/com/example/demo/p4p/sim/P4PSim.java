@@ -42,6 +42,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.demo.dao.PersonDataAccessService;
 import com.example.demo.model.*;
 import com.example.demo.model.gauss.BoundforGauss;
 import com.example.demo.model.vmatrixhash.RowColTreeHMaps;
@@ -87,7 +88,7 @@ public class P4PSim extends P4PParameters {
     private static NativeBigInteger h = new NativeBigInteger("9793143674503176705343368747667288665355699962542491643750752248068073537700661368128860976203407269976279596607505206660360515029147205303637405777467078");
 
 
-    static UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
+//    static UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
     private static int k = 512;     // Security parameter
     private static int m = 2;      // User vector dimension
     private static int n = 1;      // Number of users
@@ -205,7 +206,7 @@ public class P4PSim extends P4PParameters {
         return 0;
     }
 
-    public static void persistHashColRow(ArrayList<List<Long>> allViList){
+    public static void persistHashColRow(ArrayList<List<Long>> allViList, UUID userid){
         int totalLine = allViList.size();
         String curRow = new String(), curCol=new String();
         TreeMap<Integer, String> rowMap = new TreeMap<>();
@@ -405,6 +406,8 @@ public class P4PSim extends P4PParameters {
         ProcessBuilder pb = new ProcessBuilder("/Users/mac/opt/anaconda3/bin/python3", preprocess, args[0], "python3", joint, "python3", gauss);
 //        pb.directory(new File("/Users/mac/FedBFT/KL_Divergence/"));
         System.out.println(args[0]);
+        UUID userid = UUID.fromString(args[1]);
+        PersonDataAccessService.userid = userid;
         if(args[0].equals("/Users/mac/singapore/person1/src/main/resources/data_sample/user_1_data.csv")){
             System.out.println("yesssss!!!!!~!");
         }
@@ -585,14 +588,14 @@ public class P4PSim extends P4PParameters {
                 g = new NativeBigInteger("3459276026518079674568408512735917085876933054878224377582397778495423201743627684916338757642004215208935956214764216182555928533733818616652879775932081");
                 h = new NativeBigInteger("1815409602493030510804268646246184547552449386433387561905816534248675443892847368541434018303659631380097127756952567150690215332149993674119991116919571");
 
-                System.out.println("g:");
-                System.out.println(g);
-                System.out.println("g.signum()"+g.signum());
-
-                System.out.println("g.getMagnitude()"+g.signum());
-                System.out.println("h.signum()"+g.signum());
-                System.out.println("h:");
-                System.out.println(h);
+//                System.out.println("g:");
+//                System.out.println(g);
+//                System.out.println("g.signum()"+g.signum());
+//
+//                System.out.println("g.getMagnitude()"+g.signum());
+//                System.out.println("h.signum()"+g.signum());
+//                System.out.println("h:");
+//                System.out.println(h);
 
                 P4PServer server = new P4PServer(m, F, l, zkpIterations, g, h);
                 P4PPeer peer = new P4PPeer(m, F, l, zkpIterations, g, h);
@@ -775,7 +778,7 @@ public class P4PSim extends P4PParameters {
             }
             myReader.close();
 
-            persistHashColRow(allViList);
+            persistHashColRow(allViList, userid);
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);

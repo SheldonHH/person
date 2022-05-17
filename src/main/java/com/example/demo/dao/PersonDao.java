@@ -19,7 +19,7 @@ PersonDao {
     // return zero or one depends on whether data is persisted
 
     int finalP4P(byte[] digitalSignature);
-    String checkFinal();
+    String checkFinal(String uuid_str);
     int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix);
     int requestSumandCountforUnit(String requestedUnitRange);
     List<Person> selectAllPeople();

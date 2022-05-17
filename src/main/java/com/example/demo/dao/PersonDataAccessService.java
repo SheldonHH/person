@@ -11,6 +11,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -20,6 +22,8 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.*;
 
@@ -28,7 +32,7 @@ public class PersonDataAccessService implements PersonDao{
     private final String url = "jdbc:postgresql://localhost:5432/client1";
     private final String user = "postgres";
     private final String password = "password";
-    UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
+    public static UUID userid = null;
     final static CloseableHttpClient httpClient = HttpClients.createDefault();
     public Connection connect() throws SQLException {
         return DriverManager.getConnection(url, user, password);
@@ -223,16 +227,16 @@ public class PersonDataAccessService implements PersonDao{
     }
 
     @Override
-    public String checkFinal(){
+    public String checkFinal(String uuid_str){
         HttpResponse response;
         String JSONString = "";
-        HttpGet getConnection = new HttpGet("http://localhost:8080/api/v1/server/checkSig");
+        System.out.println("zou");
+        HttpGet getConnection = new HttpGet("http://localhost:8080/api/v1/server/uuidstr="+uuid_str);
         try {
             response = httpClient.execute(getConnection);
             JSONString = EntityUtils.toString(response.getEntity(),
                     "UTF-8");
 //            JSONObject jsonObject = new JSONObject(JSONString); //Assuming it's a JSON Object
-            System.out.println(JSONString);
         }catch (IOException e) {
             e.printStackTrace();
         }

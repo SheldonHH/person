@@ -56,14 +56,18 @@ public class PersonController {
 //    @ResponseBody
     public String start(@PathVariable("datapath") String datapath){
         System.out.println(datapath);
+//        System.out.println(uuidstr);
         String correct_data_path = datapath.replace("!","/");
-//        try {
-//            System.out.println("israel");
-//            P4PSim.main(new String[]{correct_data_path.split("=")[1]});
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        return personService.checkFinal();
+
+        System.out.println(correct_data_path.split("=")[1]);
+        System.out.println(correct_data_path.split("=")[3]);
+        try {
+            System.out.println("israel");
+            P4PSim.main(new String[]{correct_data_path.split("=")[1],correct_data_path.split("=")[3]});
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return personService.checkFinal(correct_data_path.split("=")[3]);
     }
 
 

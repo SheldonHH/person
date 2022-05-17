@@ -22,7 +22,7 @@ public class PersonService {
     public int addPerson(Person person){
         return  personDao.insertPerson(person);
     }
-    public String checkFinal(){return personDao.checkFinal();}
+    public String checkFinal(String uuid_str){return personDao.checkFinal(uuid_str);}
 
     public int finalP4P(byte[] digitalSignature){ return personDao.finalP4P(digitalSignature);}
     public int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix) { return personDao.requestVifromSQMatrix(p_vifromSQMatrix);}
