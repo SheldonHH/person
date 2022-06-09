@@ -39,8 +39,8 @@ CREATE TABLE U_PERSON_DATA (
 ALTER TABLE U_PERSON_DATA OWNER TO server1;
 DROP TABLE IF EXISTS PERSON_SIGNATURE;
 CREATE TABLE PERSON_SIGNATURE (
-                               person_id UUID PRIMARY KEY,
-                               signature text
+                                  person_id UUID PRIMARY KEY,
+                                  signature text
 );
 ALTER TABLE PERSON_SIGNATURE OWNER TO server1;
 
