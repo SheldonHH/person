@@ -1,5 +1,19 @@
 # demo_for_spring
+### 
 
+Gaussian Mixture Model
+A Gaussian mixture model is a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. 
+One can think of mixture models as generalizing k-means clustering to incorporate information about the covariance structure of the data as well as the centers of the latent Gaussians.
+The GaussianMixture object implements the expectation-maximization (EM) algorithm for fitting mixture-of-Gaussian models. 
+It can also draw confidence ellipsoids for multivariate models, and compute the Bayesian Information Criterion to assess the number of clusters in the data. 
+
+A GaussianMixture.fit method is provided that learns a Gaussian Mixture Model from train data. Given test data, it can assign to each sample the Gaussian it mostly probably belong to using the GaussianMixture.predict method.
+P4P (Peers for Privacy) and features a unique architecture and practical protocols for user data validation and vector addition-based computation.
+It turned out that many non-trivial and non-linear computations can be done using an iterative algorithm with vector-addition aggregation steps.
+
+
+
+### Call from Golang
 
 ### Q1
 
