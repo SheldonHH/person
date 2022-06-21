@@ -42,7 +42,7 @@ docker port demodb
 ```
 
 
-## 3. Build and Deploy jar AFTER PERSISTANCE CREATION
+## 3. Build and Deploy `.jar` AFTER PERSISTANCE CREATION
 ```bash
 mvn clean package
 java -jar trainingNode1-0.0.1-SNAPSHOT.jar
