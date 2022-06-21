@@ -9,8 +9,8 @@ docker run --name postgres-spring -v {PATH}/:/root/training1 -e POSTGRES_PASSWOR
 
 ### 1.2 Create Database, Roles, Tables
 - [psql_command/run_table.sh](psql_command/run_table.sh)
-  - [CREATE_ROLE_AND_DB_FLYWAY_SCHEMA.sql](psql_command/CREATE_ROLE_AND_DB_FLYWAY_SCHEMA.sh)  create database, role and `alter` owner role to respective database; `assign` owner to `flyway_schema_history`
-  - [table_creation_1csp.sql](psql_command/table_creation_1csp.sh) create table for `client1`, `server1`, `peer1`
+    - [CREATE_ROLE_AND_DB_FLYWAY_SCHEMA.sql](psql_command/CREATE_ROLE_AND_DB_FLYWAY_SCHEMA.sh)  create database, role and `alter` owner role to respective database; `assign` owner to `flyway_schema_history`
+    - [table_creation_1csp.sql](psql_command/table_creation_1csp.sh) create table for `client1`, `server1`, `peer1`
 
 API Layer / Controller Layer
 Service Layer
