@@ -68,6 +68,11 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.springframework.boot.json.JsonParser;
 
 /*
  * Providing a simulation framework for a P4P system. This allows one to debug
@@ -659,8 +664,19 @@ public class P4PSim extends P4PParameters {
                         UserVector2.L2NormBoundProof2 newServerProof = serverProof;
                         System.out.println("newServerProof.tcProof"+newServerProof.getThreeWayCommitmentProofs());
                         UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(), newServerProof);
-
                         ObjectMapper mapper = new ObjectMapper();
+                        mapper.writeValue(new File("bitCommitmentProofs.json"), newServerProof.getBitCommitmentProofs() );
+                        mapper.writeValue(new File("serverProof.json"), newServerProof);
+                        mapper.writeValue(new File("checksummss.json"), newServerProof.getChecksums());
+                        mapper.writeValue(new File("mdCorrector.json"), newServerProof.getMdCorrector());
+                        UserVector2.L2NormBoundProof2 read_l2Proof = mapper.readValue(new File("serverProof.json"), UserVector2.L2NormBoundProof2.class);
+                        long[] readed_checksum = mapper.readValue(new File("checksummss.json"), long[].class);
+                        BigInteger[] readed_mdCorrector = mapper.readValue(new File("mdCorrector.json"), BigInteger[].class);
+//                            non-static inner classes like this can only by instantiated using default, no-argument constructor
+                        BitCommitment.BitCommitmentProof[] bit = mapper.readValue(new File("bitCommitmentProofs.json"), BitCommitment.BitCommitmentProof[].class);
+
+
+                        System.out.println("SSSS");
                         mapper.registerSubtypes(ThreeWayCommitment.ThreeWayCommitmentProof.class, Proof.class, BitCommitment.BitCommitmentProof.class, SquareCommitment.SquareCommitmentProof.class);
                         mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
                         StringEntity json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);

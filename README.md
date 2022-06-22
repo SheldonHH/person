@@ -20,14 +20,14 @@ Data Access Layer
 
 #### 2.1 Restart
 ```bash
+# kill existing postgresql daemon
+# sudo kill -9 $(sudo lsof -t -i:5432)
 docker stop  $(docker ps -a | grep -E 'postgres-spring' | awk '{print $1}' | awk 'NR==1') && docker rm  $(docker ps -a | grep -E 'postgres-spring' | awk '{print $1}' | awk 'NR==1')
 docker run --name postgres-spring -v /Users/mac/singapore/person1:/root/person1 -e POSTGRES_PASSWORD=password -d -p 5432:5432 postgres:alpine
 docker exec -w /root/person1 -it $(docker ps | grep -E 'postgres-spring' | awk '{print $1}') /bin/bash
-```
-Execute `run_table.sh`
-```bash
+# Execute `run_table.sh`
 cd psql_command
-
+./run_table.sh
 ```
 ##### Issue: `docker: Error response from daemon: Ports are not available: listen tcp 0.0.0.0:5432: bind: address already in use.`
 ```bash

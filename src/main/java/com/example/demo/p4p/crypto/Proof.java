@@ -57,9 +57,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = UserVector2.L2NormBoundProof2.class, name = "L2NormBoundProof2")}
+        @JsonSubTypes.Type(value = UserVector2.L2NormBoundProof2.class, name = "L2NormBoundProof2"),
+        @JsonSubTypes.Type(value = BitCommitment.BitCommitmentProof.class, name = "BitCommitmentProof"),
+        @JsonSubTypes.Type(value = SquareCommitment.SquareCommitmentProof.class, name = "SquareCommitmentProof"),
+        @JsonSubTypes.Type(value = ThreeWayCommitment.ThreeWayCommitmentProof.class, name = "ThreeWayCommitmentProof")}
 )
-@JsonDeserialize(as=UserVector2.L2NormBoundProof2.class)
+//@JsonDeserialize(as=UserVector2.L2NormBoundProof2.class)
 public abstract class Proof extends P4PParameters {
     protected BigInteger[] commitment = null;
     /**
