@@ -61,6 +61,7 @@ import com.example.demo.util.InputStreamConsumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.Gson;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -658,13 +659,62 @@ public class P4PSim extends P4PParameters {
                         System.out.println("isForServer: "+serverProof.isForServer());
                         UserVector2.L2NormBoundProof2 newServerProof = serverProof;
                         System.out.println("newServerProof.tcProof"+newServerProof.getThreeWayCommitmentProofs());
-                        UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(), newServerProof);
+
 
                         ObjectMapper mapper = new ObjectMapper();
+                        mapper.writeValue(new File("bitCommitmentProofs.json"), newServerProof.getBitCommitmentProofs() );
+                        String sss = mapper.writeValueAsString(newServerProof.getBitCommitmentProofs());
+                        mapper.writeValue(new File("threeCommitmentProofs.json"), newServerProof.getThreeWayCommitmentProofs() );
+                        mapper.writeValue(new File("squareCommitmentProofs.json"), newServerProof.getSquareCommitmentProofs() );
+                        mapper.writeValue(new File("serverProof.json"), newServerProof);
+                        mapper.writeValue(new File("checksummss.json"), newServerProof.getChecksums());
+                        mapper.writeValue(new File("mdCorrector.json"), newServerProof.getMdCorrector());
+                        UserVector2.L2NormBoundProof2 read_l2Proof = mapper.readValue(new File("serverProof.json"), UserVector2.L2NormBoundProof2.class);
+                        BitCommitment.BitCommitmentProof bcp;
+                        List<BitCommitment.BitCommitmentProof> bcList = new ArrayList<>();
+                        List<BitCommitment.BitCommitmentProof> bcList2 = new ArrayList<>();
+                        List<ThreeWayCommitment.ThreeWayCommitmentProof> tcList = new ArrayList<>();
+                        List<SquareCommitment.SquareCommitmentProof> scList = new ArrayList<>();
+                        try {
+                            Gson gson = new Gson();    // create Gson instance
+                            Reader reader = Files.newBufferedReader(Paths.get("bitCommitmentProofs.json")); // create a reader
+                            bcList = Arrays.asList(gson.fromJson(reader,
+                                    BitCommitment.BitCommitmentProof[].class));
+                            bcList2 = Arrays.asList(gson.fromJson(sss, BitCommitment.BitCommitmentProof[].class));
+                            bcList.stream().forEach(System.out::println);
+
+                            tcList = Arrays.asList(gson.fromJson(Files.newBufferedReader(Paths.get("threeCommitmentProofs.json")),
+                                    ThreeWayCommitment.ThreeWayCommitmentProof[].class));
+                            scList = Arrays.asList(gson.fromJson(Files.newBufferedReader(Paths.get("squareCommitmentProofs.json")),
+                                    SquareCommitment.SquareCommitmentProof[].class));
+//                            postsList = gson.fromJson(reader, BitCommitment.BitCommitmentProof[].class);
+//                            Map<?, ?> map = gson.fromJson(reader, Map.class);  // convert JSON file to map
+//                            for (Map.Entry<?, ?> entry : map.entrySet()) {       // print map entries
+//                                System.out.println(entry.getKey() + "=" + entry.getValue());
+//                            }
+                            reader.close(); // close reader
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+//                        new BitCommitment(g, h).new BitCommitmentProof(bcList[0]);
+
+
+                        UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(), newServerProof, mapper.writeValueAsString(newServerProof.getBitCommitmentProofs()));
+                        BitCommitment.BitCommitmentProof[] bcpsArray = new BitCommitment.BitCommitmentProof[bcList.size()];
+                        read_l2Proof.setBcProofs(bcList.toArray(bcpsArray));
+
+                        ThreeWayCommitment.ThreeWayCommitmentProof[] tcpsArray = new ThreeWayCommitment.ThreeWayCommitmentProof[tcList.size()];
+                        read_l2Proof.setTcProofs(tcList.toArray(tcpsArray));
+
+                        SquareCommitment.SquareCommitmentProof[] scpsArray = new SquareCommitment.SquareCommitmentProof[scList.size()];
+                        read_l2Proof.setScProofs(scList.toArray(scpsArray));
+
                         mapper.registerSubtypes(ThreeWayCommitment.ThreeWayCommitmentProof.class, Proof.class, BitCommitment.BitCommitmentProof.class, SquareCommitment.SquareCommitmentProof.class);
                         mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
-                        StringEntity json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
-                        request.setEntity(json);
+//                        StringEntity json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
+
+                        request.setEntity(new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON));
                         CloseableHttpResponse response = httpClient.execute(request);
                         if(response.getStatusLine().getStatusCode() != 200){
                             System.out.println("Student is not added! "+response.getStatusLine().getStatusCode() );

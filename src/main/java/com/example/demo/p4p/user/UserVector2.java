@@ -278,6 +278,49 @@ public class UserVector2 extends UserVector implements Serializable{
      */
 //    https://stackoverflow.com/questions/15331846/non-static-variable-this-cannot-be-referenced-from-a-static-context-when-creat
     public static class L2NormBoundProof2 extends Proof implements Serializable {
+        public void setChecksums(long[] checksums) {
+            this.checksums = checksums;
+        }
+
+        public void setChecksumRandomness(BigInteger[] checksumRandomness) {
+            this.checksumRandomness = checksumRandomness;
+        }
+
+        public void setMdCorrector(BigInteger[] mdCorrector) {
+            this.mdCorrector = mdCorrector;
+        }
+
+        public void setTcProofs(ThreeWayCommitment.ThreeWayCommitmentProof[] tcProofs) {
+            this.tcProofs = tcProofs;
+        }
+
+        public void setScProofs(SquareCommitment.SquareCommitmentProof[] scProofs) {
+            this.scProofs = scProofs;
+        }
+
+        public void setBcProofs(BitCommitment.BitCommitmentProof[] bcProofs) {
+            this.bcProofs = bcProofs;
+        }
+
+        public static void setForServer(boolean forServer) {
+            L2NormBoundProof2.forServer = forServer;
+        }
+
+        public void setServerProof(L2NormBoundProof2 serverProof) {
+            this.serverProof = serverProof;
+        }
+
+        public void setPeerProof(L2NormBoundProof2 peerProof) {
+            this.peerProof = peerProof;
+        }
+
+        public void setSsBL(int ssBL) {
+            this.ssBL = ssBL;
+        }
+
+        public void setTc(ThreeWayCommitment tc) {
+            this.tc = tc;
+        }
 
         private static final long serialVersionUID = 6529685098267757690L;
         private long[] checksums = null;

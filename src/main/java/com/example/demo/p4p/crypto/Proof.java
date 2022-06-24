@@ -56,21 +56,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = UserVector2.L2NormBoundProof2.class, name = "L2NormBoundProof2")}
-)
-@JsonDeserialize(as=UserVector2.L2NormBoundProof2.class)
+//@JsonDeserialize(as=UserVector2.L2NormBoundProof2.class)
 public abstract class Proof extends P4PParameters {
     protected BigInteger[] commitment = null;
     /**
      * This is the first message in a 3-round proof. The prover ``commits''
      * to her data using some kind of commitment scheme. This is essentially
-     * a sequence of big numbers. Could be computed by one of the 
+     * a sequence of big numbers. Could be computed by one of the
      * Commitment classes.
      */
     protected BigInteger[] challenge = null;
     /**
-     * The second message in the $\Sigma$ proof. Conceptually this is a 
+     * The second message in the $\Sigma$ proof. Conceptually this is a
      * random number selected by the verifier. In a non-interactive mode,
      * it is produced by the prover by hashing the commitment.
      */
