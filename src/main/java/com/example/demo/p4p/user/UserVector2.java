@@ -31,10 +31,16 @@
 
 package com.example.demo.p4p.user;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 
+import com.example.demo.p4p.sim.P4PSim;
 import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.Util;
 import com.example.demo.net.i2p.util.NativeBigInteger;
@@ -46,6 +52,9 @@ import com.example.demo.p4p.crypto.ThreeWayCommitment;
 import com.example.demo.p4p.crypto.Commitment;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import org.javatuples.Pair;
 
 /**
  * Changes:
@@ -335,6 +344,7 @@ public class UserVector2 extends UserVector implements Serializable{
 
         private SquareCommitment.SquareCommitmentProof[] scProofs = null;
         // The square proofs
+
         private BitCommitment.BitCommitmentProof[] bcProofs = null;
         // The bit proof for the sum of the squares
         static private boolean forServer = false;
@@ -380,8 +390,10 @@ public class UserVector2 extends UserVector implements Serializable{
             serverProof.checksumRandomness = new BigInteger[c.length];
             serverProof.scProofs =
                     new SquareCommitment.SquareCommitmentProof[c.length];
+            SquareCommitment[] scs = new SquareCommitment[c.length];
             serverProof.tcProofs =
                     new ThreeWayCommitment.ThreeWayCommitmentProof[c.length];
+            ThreeWayCommitment[] tcs = new ThreeWayCommitment[c.length];
 //II.I🐯 B
             serverProof.mdCorrector = new BigInteger[c.length];
 // 🐰
@@ -423,7 +435,6 @@ public class UserVector2 extends UserVector implements Serializable{
                 serverProof.mdCorrector[i] = tc.commit(b);
                 serverProof.tcProofs[i] =
                         (ThreeWayCommitment.ThreeWayCommitmentProof)tc.getProof();
-
                 // check
                 if(!serverProof.mdCorrector[i].equals(serverProof.tcProofs[i]
                         .getCommitment()[0]))
@@ -485,6 +496,9 @@ public class UserVector2 extends UserVector implements Serializable{
                         squareSumCommitment.multiply(sc.getB()).mod(P4PParameters.p);
                 // Now get the randomness used to commit to the square:
                 sRandomness = sRandomness.add(sc.getSb()).mod(P4PParameters.q);
+
+                scs[i] = sc;
+                tcs[i] = tc;
             }
 
             if(P4PParameters.debug) {
@@ -542,7 +556,7 @@ public class UserVector2 extends UserVector implements Serializable{
             // otherwise leak info.
             P4PParameters.DEBUG("squareSum has " + numBits + " bits. The limit is "
                     + (Integer.toBinaryString(c.length).length()+2*l));
-
+            BitCommitment[] bcs = new BitCommitment[numBits];
             serverProof.bcProofs =
                     new BitCommitment.BitCommitmentProof[numBits];
             BitCommitment bc = new BitCommitment(g, h);
@@ -550,6 +564,7 @@ public class UserVector2 extends UserVector implements Serializable{
                 BigInteger cc = bc.commit(squareSum.testBit(i));
                 serverProof.bcProofs[i] =
                         (BitCommitment.BitCommitmentProof)bc.getProof();
+                bcs[i] = bc;
 
                 if(P4PParameters.debug) {
                     if(!cc.equals(serverProof.bcProofs[i].getCommitment()[0]))
@@ -574,6 +589,7 @@ public class UserVector2 extends UserVector implements Serializable{
             bc.commit(squareSum.testBit(numBits-1), sRandomness);
             serverProof.bcProofs[numBits-1] =
                     (BitCommitment.BitCommitmentProof)bc.getProof();
+            bcs[numBits-1] =bc;
 
             // Lets check it here:
             if(P4PParameters.debug) {
@@ -607,6 +623,16 @@ public class UserVector2 extends UserVector implements Serializable{
 
                 System.out.println("done");
             }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                mapper.writeValue(new File("jcs.json"),new JointCommitments(bcs,tcs, scs));
+                mapper.writeValue(new File("scs.json"), scs);
+                mapper.writeValue(new File("bcs.json"), bcs);
+                mapper.writeValue(new File("tcs.json"), tcs);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            P4PSim.jcs = new JointCommitments(bcs,tcs,scs);
         }
 
         /**
@@ -652,15 +678,18 @@ public class UserVector2 extends UserVector implements Serializable{
 
     private L2NormBoundProof2 proof = null;
 
-    public Proof getL2NormBoundProof2(boolean server) {
+    public Pair<Proof, JointCommitments> getL2NormBoundProof2(boolean server) {
+        JointCommitments jcs = null;
         if(proof == null) {
             proof = new L2NormBoundProof2(server);
-            proof.construct(); // for c.length
+           proof.construct(); // for c.length
         }
         System.out.println("what"+server);
         System.out.println("proof.getServerProof() "+proof.getServerProof().isForServer());
-        return server ? proof.getServerProof() : proof.getPeerProof();
+        Gson gson = new Gson();
+        return server ? new Pair<>(proof.getServerProof(),jcs) : new Pair<>(proof.getPeerProof(),jcs);
     }
+
     public Proof getServerBoundProof2(L2NormBoundProof2 serverProof) {
         serverProof = new L2NormBoundProof2(true);
         serverProof.construct();

@@ -1,7 +1,9 @@
 package com.example.demo.model;
 
 import com.example.demo.p4p.crypto.BitCommitment;
+import com.example.demo.p4p.crypto.SquareCommitment;
 import com.example.demo.p4p.crypto.ThreeWayCommitment;
+import com.example.demo.p4p.user.JointCommitments;
 import com.example.demo.p4p.user.UserVector2;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,37 +17,69 @@ public class UiandProof {
     private long[] ui;
     private BigInteger[] Y;
     private UserVector2.L2NormBoundProof2 serverProof;
-    private String bcjson_str;
-//    private BitCommitment.BitCommitmentProof bcList;
+    private String bcpjson_str;
+    private String tcpjson_str;
+    private String scpjson_str;
+    private String jcsjson_str;
+    private JointCommitments jointCommitments;
+    //    private BitCommitment.BitCommitmentProof bcList;
 //    private ThreeWayCommitment.ThreeWayCommitmentProof tcList;
     //    private ThreeWayCommitment.ThreeWayCommitmentProof[] tcProof;
     @JsonCreator
     public UiandProof(@JsonProperty("userid") UUID userid, @JsonProperty("ui") long[] ui, @JsonProperty("Y") BigInteger[] Y, @JsonProperty("serverProof")  UserVector2.L2NormBoundProof2 serverProof,
-                    @JsonProperty("bcjson_str") String bcjson_str) {
+                      @JsonProperty("bcpjson_str") String bcpjson_str, @JsonProperty("tcpjson_str") String tcpjson_str,
+                      @JsonProperty("scpjson_str") String scpjson_str, @JsonProperty("jcsjson_str") String jcsjson_str,
+                      @JsonProperty("jointCommitments") JointCommitments jointCommitments) {
         this.userid = userid;
         this.ui = ui;
         this.Y = Y;
         this.serverProof = serverProof;
-        this.bcjson_str = bcjson_str;
-//        this.bcList = bcList;
-//        this.tcProof = tcProof;
+        this.bcpjson_str = bcpjson_str;
+        this.tcpjson_str = tcpjson_str;
+        this.scpjson_str = scpjson_str;
+        this.jcsjson_str = jcsjson_str;
+        this.jointCommitments = jointCommitments;
     }
 
+    public String getJcsjson_str() {
+        return jcsjson_str;
+    }
 
-//    public BitCommitment.BitCommitmentProof getBcList() {
-//        return bcList;
-//    }
-//
-//    public void setBcList(BitCommitment.BitCommitmentProof bcList) {
-//        this.bcList = bcList;
-//    }
-//    public ThreeWayCommitment.ThreeWayCommitmentProof[] getTcProof() {
-//        return tcProof;
-//    }
+    public void setJcsjson_str(String jcsjson_str) {
+        this.jcsjson_str = jcsjson_str;
+    }
 
-//    public void setTcProof(ThreeWayCommitment.ThreeWayCommitmentProof[] tcProof) {
-//        this.tcProof = tcProof;
-//    }
+    public JointCommitments getJointCommitments() {
+        return jointCommitments;
+    }
+
+    public void setJointCommitments(JointCommitments jointCommitments) {
+        this.jointCommitments = jointCommitments;
+    }
+
+    public String getBcpjson_str() {
+        return bcpjson_str;
+    }
+
+    public void setBcpjson_str(String bcpjson_str) {
+        this.bcpjson_str = bcpjson_str;
+    }
+
+    public String getTcpjson_str() {
+        return tcpjson_str;
+    }
+
+    public void setTcpjson_str(String tcpjson_str) {
+        this.tcpjson_str = tcpjson_str;
+    }
+
+    public String getScpjson_str() {
+        return scpjson_str;
+    }
+
+    public void setScpjson_str(String scpjson_str) {
+        this.scpjson_str = scpjson_str;
+    }
 
     public BigInteger[] getY() {
         return Y;

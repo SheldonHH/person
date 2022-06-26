@@ -41,6 +41,7 @@ import com.example.demo.p4p.util.StopWatch;
 import com.example.demo.p4p.util.Util;
 import com.example.demo.net.i2p.util.NativeBigInteger;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -128,6 +129,7 @@ public class ThreeWayCommitment extends Commitment implements Serializable{
         return super.verify(c, val, r);
     }
 
+    
     public Proof getProof() {
         ThreeWayCommitmentProof proof = new ThreeWayCommitmentProof();
         proof.construct();
@@ -160,6 +162,10 @@ public class ThreeWayCommitment extends Commitment implements Serializable{
 
         @JsonCreator
         public ThreeWayCommitmentProof() { super(); }
+
+//        public ThreeWayCommitment getOuter(){
+//            return ThreeWayCommitment.this;
+//        }
 
         // Construct the ZKP that the commitment contains 0,or +/-c
         public void construct() {

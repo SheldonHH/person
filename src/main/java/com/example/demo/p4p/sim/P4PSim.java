@@ -50,6 +50,7 @@ import com.example.demo.p4p.crypto.BitCommitment;
 import com.example.demo.p4p.crypto.Proof;
 import com.example.demo.p4p.crypto.SquareCommitment;
 import com.example.demo.p4p.crypto.ThreeWayCommitment;
+import com.example.demo.p4p.user.JointCommitments;
 import com.example.demo.p4p.user.UserVector2;
 import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.StopWatch;
@@ -69,6 +70,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.javatuples.Pair;
 
 /*
  * Providing a simulation framework for a P4P system. This allows one to debug
@@ -87,7 +89,7 @@ public class P4PSim extends P4PParameters {
     }
     private static NativeBigInteger g = new NativeBigInteger("3182089256208329047054709904358973599639052582169128376753217579641056697166499158386824120768854848163132851742558842187976312344846648732546791352223868");
     private static NativeBigInteger h = new NativeBigInteger("9793143674503176705343368747667288665355699962542491643750752248068073537700661368128860976203407269976279596607505206660360515029147205303637405777467078");
-
+    public static JointCommitments jcs;
 
 //    static UUID userid = UUID.fromString("1fa4fd06-34f0-49a4-baf9-a4073bca0292");
     private static int k = 512;     // Security parameter
@@ -643,11 +645,14 @@ public class P4PSim extends P4PParameters {
 // 🌟 prover start 🌟
                         proverWatch.start();
 // peerProof, serverProof construct() 🐰 SquareSum.add()
+                        Pair<Proof, JointCommitments> peerPair = uv.getL2NormBoundProof2(false);
                         UserVector2.L2NormBoundProof2 peerProof =
-                                (UserVector2.L2NormBoundProof2) uv.getL2NormBoundProof2(false);
+                                (UserVector2.L2NormBoundProof2) peerPair.getValue0();
+                        Pair<Proof, JointCommitments> serverPair = uv.getL2NormBoundProof2(true);
                         UserVector2.L2NormBoundProof2 serverProof =
-                                (UserVector2.L2NormBoundProof2) uv.getL2NormBoundProof2(true);
+                                (UserVector2.L2NormBoundProof2) serverPair.getValue0();
                         proverWatch.pause();
+
 // 🌟 prover pause 🌟
 
 // 2.2 server.setUV(U),
@@ -670,13 +675,22 @@ public class P4PSim extends P4PParameters {
                         mapper.writeValue(new File("checksummss.json"), newServerProof.getChecksums());
                         mapper.writeValue(new File("mdCorrector.json"), newServerProof.getMdCorrector());
                         UserVector2.L2NormBoundProof2 read_l2Proof = mapper.readValue(new File("serverProof.json"), UserVector2.L2NormBoundProof2.class);
-                        BitCommitment.BitCommitmentProof bcp;
                         List<BitCommitment.BitCommitmentProof> bcList = new ArrayList<>();
                         List<BitCommitment.BitCommitmentProof> bcList2 = new ArrayList<>();
                         List<ThreeWayCommitment.ThreeWayCommitmentProof> tcList = new ArrayList<>();
                         List<SquareCommitment.SquareCommitmentProof> scList = new ArrayList<>();
+//                        SquareCommitment[] scs = null;
+                        BitCommitment[] bcs = null;
+//                        try {
+//                            Gson gson = new Gson();
+//                            bcs = gson.fromJson(Files.newBufferedReader(Paths.get("bcs.json")),
+//                                    BitCommitment[].class);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
                         try {
-                            Gson gson = new Gson();    // create Gson instance
+                            Gson gson = new Gson();
+                             // create Gson instance
                             Reader reader = Files.newBufferedReader(Paths.get("bitCommitmentProofs.json")); // create a reader
                             bcList = Arrays.asList(gson.fromJson(reader,
                                     BitCommitment.BitCommitmentProof[].class));
@@ -698,22 +712,44 @@ public class P4PSim extends P4PParameters {
                         }
 
 //                        new BitCommitment(g, h).new BitCommitmentProof(bcList[0]);
+//                        BitCommitment.BitCommitmentProof[] bcpsArray = new BitCommitment.BitCommitmentProof[bcList.size()];
+                        read_l2Proof.setBcProofs(bcList.toArray(new BitCommitment.BitCommitmentProof[bcList.size()]));
 
 
-                        UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(), newServerProof, mapper.writeValueAsString(newServerProof.getBitCommitmentProofs()));
-                        BitCommitment.BitCommitmentProof[] bcpsArray = new BitCommitment.BitCommitmentProof[bcList.size()];
-                        read_l2Proof.setBcProofs(bcList.toArray(bcpsArray));
+//                        BitCommitment[] bcmArray = new BitCommitment[bcList.size()];
+//                        int counter = 0;
+//                        for(BitCommitment.BitCommitmentProof bcp:  newServerProof.getBitCommitmentProofs()){
+//                            bcmArray[counter] = bcp.getOuter();
+//                        }
+//                        ThreeWayCommitment[] tcmArray = new ThreeWayCommitment[tcList.size()];
+//                        counter = 0;
+//                        for(ThreeWayCommitment.ThreeWayCommitmentProof tcp:  newServerProof.getThreeWayCommitmentProofs()){
+//                            tcmArray[counter] = tcp.getOuter();
+//                        }
+//                        SquareCommitment[] scmArray = new SquareCommitment[scList.size()];
+//                        counter = 0;
+//                        for(SquareCommitment.SquareCommitmentProof scp:  newServerProof.getSquareCommitmentProofs()){
+//                            scmArray[counter] = scp.getOuter();
+//                        }
+                        String jcsjson_str = mapper.writeValueAsString(jcs);
+//
+                        UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(),
+                                newServerProof, mapper.writeValueAsString(bcList.toArray(new BitCommitment.BitCommitmentProof[bcList.size()])),
+                                mapper.writeValueAsString(tcList.toArray(new ThreeWayCommitment.ThreeWayCommitmentProof[tcList.size()])),
+                                mapper.writeValueAsString(scList.toArray(new SquareCommitment.SquareCommitmentProof[scList.size()])), jcsjson_str, jcs);
 
-                        ThreeWayCommitment.ThreeWayCommitmentProof[] tcpsArray = new ThreeWayCommitment.ThreeWayCommitmentProof[tcList.size()];
-                        read_l2Proof.setTcProofs(tcList.toArray(tcpsArray));
 
-                        SquareCommitment.SquareCommitmentProof[] scpsArray = new SquareCommitment.SquareCommitmentProof[scList.size()];
-                        read_l2Proof.setScProofs(scList.toArray(scpsArray));
 
-                        mapper.registerSubtypes(ThreeWayCommitment.ThreeWayCommitmentProof.class, Proof.class, BitCommitment.BitCommitmentProof.class, SquareCommitment.SquareCommitmentProof.class);
+//                        ThreeWayCommitment.ThreeWayCommitmentProof[] tcpsArray = new ThreeWayCommitment.ThreeWayCommitmentProof[tcList.size()];
+//                        read_l2Proof.setTcProofs(tcList.toArray(tcpsArray));
+//
+//                        SquareCommitment.SquareCommitmentProof[] scpsArray = new SquareCommitment.SquareCommitmentProof[scList.size()];
+//                        read_l2Proof.setScProofs(scList.toArray(scpsArray));
+
+//                        mapper.registerSubtypes(ThreeWayCommitment.ThreeWayCommitmentProof.class, Proof.class, BitCommitment.BitCommitmentProof.class, SquareCommitment.SquareCommitmentProof.class);
+                        mapper.registerSubtypes(JointCommitments.class, ThreeWayCommitment.ThreeWayCommitmentProof.class, SquareCommitment.class, ThreeWayCommitment.class, Proof.class, BitCommitment.class, SquareCommitment.SquareCommitmentProof.class);
                         mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
 //                        StringEntity json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
-
                         request.setEntity(new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON));
                         CloseableHttpResponse response = httpClient.execute(request);
                         if(response.getStatusLine().getStatusCode() != 200){

@@ -83,6 +83,9 @@ public class Commitment extends P4PParameters implements Serializable {
      */
     protected BigInteger r = null;
 
+    public Commitment(){
+
+    }
     /**
      */
     @JsonCreator

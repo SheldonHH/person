@@ -41,6 +41,7 @@ import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.StopWatch;
 import com.example.demo.p4p.util.Util;
 import com.example.demo.net.i2p.util.NativeBigInteger;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * This is a bit commitment. It only allows committing to the value of either 0
@@ -49,9 +50,12 @@ import com.example.demo.net.i2p.util.NativeBigInteger;
  *
  * @author ET 08/28/2005
  */
-
 public class BitCommitment extends Commitment implements Serializable{
     private static final long serialVersionUID = 6529685098267757690L;
+
+    public BitCommitment(){
+        
+    }
     public BitCommitment(NativeBigInteger g, NativeBigInteger h) {
         super(g, h);
     }
@@ -118,7 +122,7 @@ public class BitCommitment extends Commitment implements Serializable{
 
         return super.verify(c, val, r);
     }
-
+    
     public Proof getProof() {
         BitCommitmentProof proof = new BitCommitmentProof();
         proof.construct();
@@ -142,7 +146,9 @@ public class BitCommitment extends Commitment implements Serializable{
     public class BitCommitmentProof extends Proof implements Serializable{
         private static final long serialVersionUID = 6529685098267757690L;
         public BitCommitmentProof() { super(); }
-
+//        public BitCommitment getOuter(){
+//            return BitCommitment.this;
+//        }
         // Construct the ZKP that the commitment contains a bit
         public void construct() {
             if(val == null)

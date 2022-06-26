@@ -39,6 +39,7 @@ import com.example.demo.p4p.util.P4PParameters;
 import com.example.demo.p4p.util.StopWatch;
 import com.example.demo.p4p.util.Util;
 import com.example.demo.net.i2p.util.NativeBigInteger;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -157,6 +158,30 @@ public class SquareCommitment extends Commitment implements Serializable{
         return B;
     }
 
+    public void setA(BigInteger a) {
+        this.a = a;
+    }
+
+    public void setB(BigInteger b) {
+        this.b = b;
+    }
+
+    public void setA(NativeBigInteger a) {
+        A = a;
+    }
+
+    public void setB(NativeBigInteger b) {
+        B = b;
+    }
+
+    public void setSa(BigInteger sa) {
+        this.sa = sa;
+    }
+
+    public void setSb(BigInteger sb) {
+        this.sb = sb;
+    }
+
     /**
      * Gets the randomness
      */
@@ -168,9 +193,17 @@ public class SquareCommitment extends Commitment implements Serializable{
         return sb;
     }
 
+    public BigInteger[] getabSaSb(){
+        return new BigInteger[]{a,b,sa,sb};
+    }
+
+    public NativeBigInteger[] getABgh(){
+        return new NativeBigInteger[]{A,B,g,h};
+    }
     /**
      * Constructs the square commitment proof.
      */
+    
     public Proof getProof() {
         SquareCommitmentProof proof = new SquareCommitmentProof();
         proof.construct();
@@ -190,6 +223,10 @@ public class SquareCommitment extends Commitment implements Serializable{
         private static final long serialVersionUID = 6529685098267757690L;
         public SquareCommitmentProof() { super(); }
 
+        // must go with @JsonIgnore
+//        public SquareCommitment getOuter(){
+//            return SquareCommitment.this;
+//        }
         // Construct the ZKP that the commitment contains a bit
         public void construct() {
             if(A == null || B == null)
