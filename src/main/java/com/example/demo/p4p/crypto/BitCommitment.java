@@ -56,6 +56,7 @@ public class BitCommitment extends Commitment implements Serializable{
     public BitCommitment(){
         
     }
+
     public BitCommitment(NativeBigInteger g, NativeBigInteger h) {
         super(g, h);
     }
@@ -72,7 +73,9 @@ public class BitCommitment extends Commitment implements Serializable{
         // exponetiation if val is either 0 or 1.
     }
 
-
+    public NativeBigInteger[] getgh(){
+        return new NativeBigInteger[]{g,h};
+    }
     /**
      * Commit to a bit
      */

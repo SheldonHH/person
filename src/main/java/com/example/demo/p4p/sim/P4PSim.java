@@ -735,12 +735,12 @@ public class P4PSim extends P4PParameters {
                         String bcjson_str = mapper.writeValueAsString(jcs.getBcs());
                         String scjson_str = mapper.writeValueAsString(jcs.getScs());
                         String tcjson_str = mapper.writeValueAsString(jcs.getTcs());
-//                        List<BitCommitment> bcList = new ArrayList<>();
+//                        List<BitCommitment> bcpList = new ArrayList<>();
 //                        List<ThreeWayCommitment> tcList = new ArrayList<>();
 //                        List<SquareCommitment> scList = new ArrayList<>();
 //                        Gson gson = new Gson();    // create Gson instance
 //                        try {
-//                            bcList = Arrays.asList(gson.fromJson(bcjson_str,
+//                            bcpList = Arrays.asList(gson.fromJson(bcjson_str,
 //                                    BitCommitment[].class));
 //                            tcList = Arrays.asList(gson.fromJson(tcjson_str,
 //                                    ThreeWayCommitment[].class));

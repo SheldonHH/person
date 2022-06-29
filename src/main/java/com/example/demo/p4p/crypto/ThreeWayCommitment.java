@@ -66,6 +66,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ThreeWayCommitment extends Commitment implements Serializable{
     private static final long serialVersionUID = 6529685098267757690L;
     public final NativeBigInteger CONST;    // The public constant
+
     public ThreeWayCommitment(NativeBigInteger g, NativeBigInteger h,
                               BigInteger c) {
         super(g, h);
@@ -78,6 +79,9 @@ public class ThreeWayCommitment extends Commitment implements Serializable{
         this.CONST = new NativeBigInteger(new BigInteger(String.valueOf(c)).abs());
     }
 
+    public NativeBigInteger[] getghconst(){
+        return new NativeBigInteger[]{g,h,CONST};
+    }
     /**
      */
     public BigInteger commit(BigInteger val) {
@@ -159,6 +163,15 @@ public class ThreeWayCommitment extends Commitment implements Serializable{
          */
         private BitCommitment.BitCommitmentProof bcp1 = null;
         private BitCommitment.BitCommitmentProof bcp2 = null;
+
+        public void setNumeratorProof(BitCommitment.BitCommitmentProof bcp1) {
+            this.bcp1 = bcp1;
+        }
+
+
+        public void setDenominatorProof(BitCommitment.BitCommitmentProof bcp2) {
+            this.bcp2 = bcp2;
+        }
 
         @JsonCreator
         public ThreeWayCommitmentProof() { super(); }
