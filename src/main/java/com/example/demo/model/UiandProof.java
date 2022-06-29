@@ -21,15 +21,18 @@ public class UiandProof {
     private String tcpjson_str;
     private String scpjson_str;
     private String jcsjson_str;
-    private JointCommitments jointCommitments;
+//    private JointCommitments jointCommitments;
+//    private BitCommitment[] bcs;
+//    private SquareCommitment[] scs;
+//    private ThreeWayCommitment[] tcs;
     //    private BitCommitment.BitCommitmentProof bcList;
 //    private ThreeWayCommitment.ThreeWayCommitmentProof tcList;
     //    private ThreeWayCommitment.ThreeWayCommitmentProof[] tcProof;
     @JsonCreator
     public UiandProof(@JsonProperty("userid") UUID userid, @JsonProperty("ui") long[] ui, @JsonProperty("Y") BigInteger[] Y, @JsonProperty("serverProof")  UserVector2.L2NormBoundProof2 serverProof,
                       @JsonProperty("bcpjson_str") String bcpjson_str, @JsonProperty("tcpjson_str") String tcpjson_str,
-                      @JsonProperty("scpjson_str") String scpjson_str, @JsonProperty("jcsjson_str") String jcsjson_str,
-                      @JsonProperty("jointCommitments") JointCommitments jointCommitments) {
+                      @JsonProperty("scpjson_str") String scpjson_str, @JsonProperty("jcsjson_str") String jcsjson_str){
+//                      @JsonProperty("jointCommitments") JointCommitments jointCommitments, @JsonProperty("bcs")BitCommitment[] bcs, @JsonProperty("scs")SquareCommitment[] scs, @JsonProperty("tcs")ThreeWayCommitment[]tcs) {
         this.userid = userid;
         this.ui = ui;
         this.Y = Y;
@@ -38,8 +41,35 @@ public class UiandProof {
         this.tcpjson_str = tcpjson_str;
         this.scpjson_str = scpjson_str;
         this.jcsjson_str = jcsjson_str;
-        this.jointCommitments = jointCommitments;
+//        this.jointCommitments = jointCommitments;
+//        this.bcs = bcs;
+//        this.tcs = tcs;
+//        this.scs = scs;
     }
+
+//    public BitCommitment[] getBcs() {
+//        return bcs;
+//    }
+//
+//    public void setBcs(BitCommitment[] bcs) {
+//        this.bcs = bcs;
+//    }
+//
+//    public SquareCommitment[] getScs() {
+//        return scs;
+//    }
+//
+//    public void setScs(SquareCommitment[] scs) {
+//        this.scs = scs;
+//    }
+//
+//    public ThreeWayCommitment[] getTcs() {
+//        return tcs;
+//    }
+//
+//    public void setTcs(ThreeWayCommitment[] tcs) {
+//        this.tcs = tcs;
+//    }
 
     public String getJcsjson_str() {
         return jcsjson_str;
@@ -49,13 +79,13 @@ public class UiandProof {
         this.jcsjson_str = jcsjson_str;
     }
 
-    public JointCommitments getJointCommitments() {
-        return jointCommitments;
-    }
-
-    public void setJointCommitments(JointCommitments jointCommitments) {
-        this.jointCommitments = jointCommitments;
-    }
+//    public JointCommitments getJointCommitments() {
+//        return jointCommitments;
+//    }
+//
+//    public void setJointCommitments(JointCommitments jointCommitments) {
+//        this.jointCommitments = jointCommitments;
+//    }
 
     public String getBcpjson_str() {
         return bcpjson_str;

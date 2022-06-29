@@ -89,6 +89,18 @@ public abstract class Proof extends P4PParameters {
     public BigInteger[] getChallenge() { return challenge; }
     public BigInteger[] getResponse() { return response; }
 
+    public void setCommitment(BigInteger[] commitment) {
+        this.commitment = commitment;
+    }
+
+    public void setChallenge(BigInteger[] challenge) {
+        this.challenge = challenge;
+    }
+
+    public void setResponse(BigInteger[] response) {
+        this.response = response;
+    }
+
     /**
      * Construct the proof. This should be overriden by subclasses.
      */

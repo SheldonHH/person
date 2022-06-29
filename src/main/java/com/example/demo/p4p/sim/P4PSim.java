@@ -675,10 +675,10 @@ public class P4PSim extends P4PParameters {
                         mapper.writeValue(new File("checksummss.json"), newServerProof.getChecksums());
                         mapper.writeValue(new File("mdCorrector.json"), newServerProof.getMdCorrector());
                         UserVector2.L2NormBoundProof2 read_l2Proof = mapper.readValue(new File("serverProof.json"), UserVector2.L2NormBoundProof2.class);
-                        List<BitCommitment.BitCommitmentProof> bcList = new ArrayList<>();
-                        List<BitCommitment.BitCommitmentProof> bcList2 = new ArrayList<>();
-                        List<ThreeWayCommitment.ThreeWayCommitmentProof> tcList = new ArrayList<>();
-                        List<SquareCommitment.SquareCommitmentProof> scList = new ArrayList<>();
+                        List<BitCommitment.BitCommitmentProof> bcpList = new ArrayList<>();
+                        List<BitCommitment.BitCommitmentProof> bcpList2 = new ArrayList<>();
+                        List<ThreeWayCommitment.ThreeWayCommitmentProof> tcpList = new ArrayList<>();
+                        List<SquareCommitment.SquareCommitmentProof> scpList = new ArrayList<>();
 //                        SquareCommitment[] scs = null;
                         BitCommitment[] bcs = null;
 //                        try {
@@ -692,14 +692,14 @@ public class P4PSim extends P4PParameters {
                             Gson gson = new Gson();
                              // create Gson instance
                             Reader reader = Files.newBufferedReader(Paths.get("bitCommitmentProofs.json")); // create a reader
-                            bcList = Arrays.asList(gson.fromJson(reader,
+                            bcpList = Arrays.asList(gson.fromJson(reader,
                                     BitCommitment.BitCommitmentProof[].class));
-                            bcList2 = Arrays.asList(gson.fromJson(sss, BitCommitment.BitCommitmentProof[].class));
-                            bcList.stream().forEach(System.out::println);
+                            bcpList2 = Arrays.asList(gson.fromJson(sss, BitCommitment.BitCommitmentProof[].class));
+                            bcpList.stream().forEach(System.out::println);
 
-                            tcList = Arrays.asList(gson.fromJson(Files.newBufferedReader(Paths.get("threeCommitmentProofs.json")),
+                            tcpList = Arrays.asList(gson.fromJson(Files.newBufferedReader(Paths.get("threeCommitmentProofs.json")),
                                     ThreeWayCommitment.ThreeWayCommitmentProof[].class));
-                            scList = Arrays.asList(gson.fromJson(Files.newBufferedReader(Paths.get("squareCommitmentProofs.json")),
+                            scpList = Arrays.asList(gson.fromJson(Files.newBufferedReader(Paths.get("squareCommitmentProofs.json")),
                                     SquareCommitment.SquareCommitmentProof[].class));
 //                            postsList = gson.fromJson(reader, BitCommitment.BitCommitmentProof[].class);
 //                            Map<?, ?> map = gson.fromJson(reader, Map.class);  // convert JSON file to map
@@ -711,40 +711,63 @@ public class P4PSim extends P4PParameters {
                             ex.printStackTrace();
                         }
 
-//                        new BitCommitment(g, h).new BitCommitmentProof(bcList[0]);
-//                        BitCommitment.BitCommitmentProof[] bcpsArray = new BitCommitment.BitCommitmentProof[bcList.size()];
-                        read_l2Proof.setBcProofs(bcList.toArray(new BitCommitment.BitCommitmentProof[bcList.size()]));
+//                        new BitCommitment(g, h).new BitCommitmentProof(bcpList[0]);
+//                        BitCommitment.BitCommitmentProof[] bcpsArray = new BitCommitment.BitCommitmentProof[bcpList.size()];
+                        read_l2Proof.setBcProofs(bcpList.toArray(new BitCommitment.BitCommitmentProof[bcpList.size()]));
 
 
-//                        BitCommitment[] bcmArray = new BitCommitment[bcList.size()];
+//                        BitCommitment[] bcmArray = new BitCommitment[bcpList.size()];
 //                        int counter = 0;
 //                        for(BitCommitment.BitCommitmentProof bcp:  newServerProof.getBitCommitmentProofs()){
 //                            bcmArray[counter] = bcp.getOuter();
 //                        }
-//                        ThreeWayCommitment[] tcmArray = new ThreeWayCommitment[tcList.size()];
+//                        ThreeWayCommitment[] tcmArray = new ThreeWayCommitment[tcpList.size()];
 //                        counter = 0;
 //                        for(ThreeWayCommitment.ThreeWayCommitmentProof tcp:  newServerProof.getThreeWayCommitmentProofs()){
 //                            tcmArray[counter] = tcp.getOuter();
 //                        }
-//                        SquareCommitment[] scmArray = new SquareCommitment[scList.size()];
+//                        SquareCommitment[] scmArray = new SquareCommitment[scpList.size()];
 //                        counter = 0;
 //                        for(SquareCommitment.SquareCommitmentProof scp:  newServerProof.getSquareCommitmentProofs()){
 //                            scmArray[counter] = scp.getOuter();
 //                        }
                         String jcsjson_str = mapper.writeValueAsString(jcs);
+                        String bcjson_str = mapper.writeValueAsString(jcs.getBcs());
+                        String scjson_str = mapper.writeValueAsString(jcs.getScs());
+                        String tcjson_str = mapper.writeValueAsString(jcs.getTcs());
+//                        List<BitCommitment> bcList = new ArrayList<>();
+//                        List<ThreeWayCommitment> tcList = new ArrayList<>();
+//                        List<SquareCommitment> scList = new ArrayList<>();
+//                        Gson gson = new Gson();    // create Gson instance
+//                        try {
+//                            bcList = Arrays.asList(gson.fromJson(bcjson_str,
+//                                    BitCommitment[].class));
+//                            tcList = Arrays.asList(gson.fromJson(tcjson_str,
+//                                    ThreeWayCommitment[].class));
+//                            scList = Arrays.asList(gson.fromJson(scjson_str,
+//                                    SquareCommitment[].class));
+////                scpList = Arrays.asList(gson.fromJson(uiandProof.getJcsjson_str().substring(uiandProof.getJcsjson_str().indexOf(":"),uiandProof.getJcsjson_str().indexOf("!")),
+////                        SquareCommitment[].class));
+////                tcpList = Arrays.asList(gson.fromJson(uiandProof.getJcsjson_str().substring(uiandProof.getJcsjson_str().indexOf("!")),
+////                        ThreeWayCommitment[].class));
 //
+//                            System.out.println("Here");
+//                        } catch (Exception ex) {
+//                            ex.printStackTrace();
+//                        }
+//                          , jcs
                         UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(),
-                                newServerProof, mapper.writeValueAsString(bcList.toArray(new BitCommitment.BitCommitmentProof[bcList.size()])),
-                                mapper.writeValueAsString(tcList.toArray(new ThreeWayCommitment.ThreeWayCommitmentProof[tcList.size()])),
-                                mapper.writeValueAsString(scList.toArray(new SquareCommitment.SquareCommitmentProof[scList.size()])), jcsjson_str, jcs);
+                                newServerProof, mapper.writeValueAsString(bcpList.toArray(new BitCommitment.BitCommitmentProof[bcpList.size()])),
+                                mapper.writeValueAsString(tcpList.toArray(new ThreeWayCommitment.ThreeWayCommitmentProof[tcpList.size()])),
+                                mapper.writeValueAsString(scpList.toArray(new SquareCommitment.SquareCommitmentProof[scpList.size()])), bcjson_str+"!"+scjson_str+"!"+tcjson_str);
 
 
 
-//                        ThreeWayCommitment.ThreeWayCommitmentProof[] tcpsArray = new ThreeWayCommitment.ThreeWayCommitmentProof[tcList.size()];
-//                        read_l2Proof.setTcProofs(tcList.toArray(tcpsArray));
+//                        ThreeWayCommitment.ThreeWayCommitmentProof[] tcpsArray = new ThreeWayCommitment.ThreeWayCommitmentProof[tcpList.size()];
+//                        read_l2Proof.setTcProofs(tcpList.toArray(tcpsArray));
 //
-//                        SquareCommitment.SquareCommitmentProof[] scpsArray = new SquareCommitment.SquareCommitmentProof[scList.size()];
-//                        read_l2Proof.setScProofs(scList.toArray(scpsArray));
+//                        SquareCommitment.SquareCommitmentProof[] scpsArray = new SquareCommitment.SquareCommitmentProof[scpList.size()];
+//                        read_l2Proof.setScProofs(scpList.toArray(scpsArray));
 
 //                        mapper.registerSubtypes(ThreeWayCommitment.ThreeWayCommitmentProof.class, Proof.class, BitCommitment.BitCommitmentProof.class, SquareCommitment.SquareCommitmentProof.class);
                         mapper.registerSubtypes(JointCommitments.class, ThreeWayCommitment.ThreeWayCommitmentProof.class, SquareCommitment.class, ThreeWayCommitment.class, Proof.class, BitCommitment.class, SquareCommitment.SquareCommitmentProof.class);
