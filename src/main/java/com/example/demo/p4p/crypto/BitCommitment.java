@@ -76,6 +76,7 @@ public class BitCommitment extends Commitment implements Serializable{
     public NativeBigInteger[] getgh(){
         return new NativeBigInteger[]{g,h};
     }
+
     /**
      * Commit to a bit
      */

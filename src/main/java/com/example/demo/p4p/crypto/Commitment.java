@@ -83,6 +83,14 @@ public class Commitment extends P4PParameters implements Serializable {
      */
     protected BigInteger r = null;
 
+    public void setVal(BigInteger val) {
+        this.val = val;
+    }
+
+    public void setR(BigInteger r) {
+        this.r = r;
+    }
+
     public Commitment(){
 
     }
