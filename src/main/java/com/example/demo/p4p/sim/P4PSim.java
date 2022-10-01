@@ -277,7 +277,7 @@ public class P4PSim extends P4PParameters {
                     }
                 }
             }
-            HttpPost request = new HttpPost("http://localhost:9002/api/v1/peer/rowcoltreehashmaps");
+            HttpPost request = new HttpPost("http://localhost:9001/api/v1/peer/rowcoltreehashmaps");
             RowColTreeHMaps rowColTreeMaps = new RowColTreeHMaps(userid, colHashMap,rowHashMap);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -671,7 +671,7 @@ public class P4PSim extends P4PParameters {
                         }
 
 
-                        HttpPost request_viProof = new HttpPost("http://localhost:9002/api/v1/peer/viandproof");
+                        HttpPost request_viProof = new HttpPost("http://localhost:9001/api/v1/peer/viandproof");
                         uv.setForServer(false); // since Proof is a self-circuited class
                         System.out.println("peer isForServer: "+serverProof.isForServer());
                         ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof);
@@ -782,7 +782,7 @@ public class P4PSim extends P4PParameters {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
-            HttpPost request_finishVi = new HttpPost("http://localhost:9002/api/v1/peer/finishvi");
+            HttpPost request_finishVi = new HttpPost("http://localhost:9001/api/v1/peer/finishvi");
             StringEntity finishVi_json = null;
             finishVi_json = new StringEntity(mapper.writeValueAsString(new PersonCount(num_of_element, userid)), ContentType.APPLICATION_JSON);
             request_finishVi.setEntity(finishVi_json);
