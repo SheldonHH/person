@@ -230,7 +230,7 @@ public class PersonDataAccessService implements PersonDao{
     public String checkFinal(String uuid_str){
         HttpResponse response;
         String JSONString = "";
-        System.out.println("zou");
+        System.out.println("zou, CheckFinal");
         HttpGet getConnection = new HttpGet("http://localhost:8081/api/v1/server/uuidstr="+uuid_str);
         try {
             response = httpClient.execute(getConnection);
