@@ -109,7 +109,7 @@ public class PersonController {
 //        return personService.getAllPeople();
 //    }
 
-    // localhost:8080/api/v1/person/
+    // localhost:8081/api/v1/person/
 //    @GetMapping(path = "{id}")
 //    public  Person getPersonById(UUID id){
 //        System.out.println(id.toString());

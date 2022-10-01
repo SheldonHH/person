@@ -653,7 +653,7 @@ public class P4PSim extends P4PParameters {
                         server.setUserVector(i, uv.getU());
 // 2.3 server.setProof
                         server.setProof(i, serverProof);
-                        HttpPost request = new HttpPost("http://localhost:8080/api/v1/server/uiandproof");
+                        HttpPost request = new HttpPost("http://localhost:8081/api/v1/server/uiandproof");
                         uv.setForServer(true);
                         System.out.println("isForServer: "+serverProof.isForServer());
                         UserVector2.L2NormBoundProof2 newServerProof = serverProof;
@@ -664,6 +664,8 @@ public class P4PSim extends P4PParameters {
                         mapper.registerSubtypes(ThreeWayCommitment.ThreeWayCommitmentProof.class, Proof.class, BitCommitment.BitCommitmentProof.class, SquareCommitment.SquareCommitmentProof.class);
                         mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
                         StringEntity json = new StringEntity(mapper.writeValueAsString(uiandProof), ContentType.APPLICATION_JSON);
+                        //  public void addUiandProof(@Valid @NonNull @RequestBody UUID userid, UUID id, long[] ui, UserVector2.L2NormBoundProof2 serverProof){
+                        //
                         request.setEntity(json);
                         CloseableHttpResponse response = httpClient.execute(request);
                         if(response.getStatusLine().getStatusCode() != 200){
@@ -792,7 +794,7 @@ public class P4PSim extends P4PParameters {
             }
 
 
-            HttpPost request_BoundforGauss = new HttpPost("http://localhost:8080/api/v1/server/addGaussParamsSampleRange");
+            HttpPost request_BoundforGauss = new HttpPost("http://localhost:8081/api/v1/server/addGaussParamsSampleRange");
             StringEntity boundforGauss_json = new StringEntity(mapper.writeValueAsString(new BoundforGauss(userid,maxX1,maxX2,minX1,minX2, gauss_params, rangeforX12s)), ContentType.APPLICATION_JSON);
             request_BoundforGauss.setEntity(boundforGauss_json);
             CloseableHttpResponse response_boundforGauss = httpClient.execute(request_BoundforGauss);

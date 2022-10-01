@@ -204,7 +204,7 @@ public class PersonDataAccessService implements PersonDao{
                 }
             }
 
-            HttpPost request = new HttpPost("http://localhost:" + "8080/api/v1/server/samplesumcount");
+            HttpPost request = new HttpPost("http://localhost:" + "8081/api/v1/server/samplesumcount");
             ResponseSumCount responseSumCount = new ResponseSumCount(sum, countForRequestUnit);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
@@ -231,7 +231,7 @@ public class PersonDataAccessService implements PersonDao{
         HttpResponse response;
         String JSONString = "";
         System.out.println("zou");
-        HttpGet getConnection = new HttpGet("http://localhost:8080/api/v1/server/uuidstr="+uuid_str);
+        HttpGet getConnection = new HttpGet("http://localhost:8081/api/v1/server/uuidstr="+uuid_str);
         try {
             response = httpClient.execute(getConnection);
             JSONString = EntityUtils.toString(response.getEntity(),
