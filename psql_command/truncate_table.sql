@@ -45,3 +45,16 @@ TRUNCATE TABLE HashList;
 TRUNCATE TABLE VHashMatrix;
 TRUNCATE TABLE DiUnitRange;
 TRUNCATE TABLE HashList;
+
+
+
+\c client5
+TRUNCATE TABLE VHashMatrix;
+TRUNCATE TABLE DiUnitRange;
+TRUNCATE TABLE HashList;
+
+
+\c client6
+TRUNCATE TABLE VHashMatrix;
+TRUNCATE TABLE DiUnitRange;
+TRUNCATE TABLE HashList;
