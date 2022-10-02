@@ -14,7 +14,6 @@ java -jar client1.jar >> client1.log &
 java -jar client2.jar >> client2.log &
 ## java -jar client3.jar >> client3.log &
 ## java -jar client4.jar >> client4.log &
-
 echo "sleep 35 second for set 1: client1, client2"
 sleep 35
 

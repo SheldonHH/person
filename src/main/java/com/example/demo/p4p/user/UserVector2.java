@@ -614,7 +614,7 @@ public class UserVector2 extends UserVector implements Serializable{
             proof = new L2NormBoundProof2(server);
             proof.construct(); // for c.length
         }
-        System.out.println("what"+server);
+        System.out.println("WHICH PROOF TYPE IN UV2 class: "+server);
         System.out.println("proof.getServerProof() "+proof.getServerProof().isForServer());
         return server ? proof.getServerProof() : proof.getPeerProof();
     }
