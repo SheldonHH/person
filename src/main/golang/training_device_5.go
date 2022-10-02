@@ -42,9 +42,9 @@ func main() {
             return
         }
 //     uuid_str := fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
-    uuid_str := "7371c17b-f1c4-45f7-84e5-0909d3470a26"
+    uuid_str := "b06f2b0a-db55-42f6-a01d-7b4307229896"
     params := "datapath=" + url.QueryEscape(prepared_raw_path) +"=personID=" + url.QueryEscape(uuid_str)
-    path := fmt.Sprintf("http://127.0.0.1:6004/api/v1/person/%s", params)
+    path := fmt.Sprintf("http://127.0.0.1:6005/api/v1/person/%s", params)
     resp, err := http.Get(path)
     defer elapsed("p4p")()
     if err != nil {

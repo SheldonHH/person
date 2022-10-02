@@ -1,8 +1,8 @@
 ps aux | grep peer1 | grep -v grep
 ps aux | grep peer2 | grep -v grep
 
-kill $(ps aux | grep peer1 | grep -v grep | awk 'NR==1{print $2}' | cut -d' ' -f1 )
-kill $(ps aux | grep peer2 | grep -v grep | awk 'NR==1{print $2}' | cut -d' ' -f1 )
+#kill $(ps aux | grep peer1 | grep -v grep | awk 'NR==1{print $2}' | cut -d' ' -f1 )
+#kill $(ps aux | grep peer2 | grep -v grep | awk 'NR==1{print $2}' | cut -d' ' -f1 )
 
 echo "killing peer and wait 2 seconds"
 sleep 2
