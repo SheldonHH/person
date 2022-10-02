@@ -240,8 +240,8 @@ public class P4PSim extends P4PParameters {
 
 
         String SQL = "INSERT INTO " +
-                "HashList(hash_id, rowOrCol, index, concatedResult, HashResult) "
-                + "VALUES(?,?,?,?,?)";
+                "HashList(hash_id, rowOrCol, index, concatedResult, HashResult, created_at) "
+                + "VALUES(?,?,?,?,?, NOW())";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
