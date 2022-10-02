@@ -2,8 +2,8 @@
 ps aux | grep peer1
 ps aux | grep peer2
 
-kill $(ps aux | grep peer1 | awk 'NR==2{print $2}' | cut -d' ' -f1 )
-kill $(ps aux | grep peer2 | awk 'NR==2{print $2}' | cut -d' ' -f1 )
+kill $(ps aux | grep peer1 | grep -v grep | awk 'NR==1{print $2}' | cut -d' ' -f1 )
+kill $(ps aux | grep peer2 | grep -v grep | awk 'NR==1{print $2}' | cut -d' ' -f1 )
 
 echo "sleep 30 seconds"
 sleep 30
