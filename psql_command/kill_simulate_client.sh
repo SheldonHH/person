@@ -9,8 +9,8 @@ kill $(ps aux | grep client2 | grep -v grep | awk 'NR==1{print $2}' | cut -d' ' 
 kill $(ps aux | grep client3 | grep -v grep | awk 'NR==1{print $2}' | cut -d' ' -f1 )
 kill $(ps aux | grep client4 | grep -v grep | awk 'NR==1{print $2}' | cut -d' ' -f1 )
 
-echo "sleep 30 seconds"
-sleep 30
+echo "sleep 3 seconds"
+sleep 3
 
 
 
