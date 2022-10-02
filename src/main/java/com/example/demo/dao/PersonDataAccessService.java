@@ -29,9 +29,10 @@ import java.util.*;
 
 @Repository("postgres")
 public class PersonDataAccessService implements PersonDao{
-    private final String url = "jdbc:postgresql://localhost:5432/client1";
-    private final String user = "postgres";
-    private final String password = "password";
+    public static final String url = "jdbc:postgresql://localhost:5432/client1";
+    public static String peerPort = "9001";
+    public static final String user = "postgres";
+    public static final String password = "password";
     public static UUID userid = null;
     final static CloseableHttpClient httpClient = HttpClients.createDefault();
     public Connection connect() throws SQLException {
@@ -126,7 +127,7 @@ public class PersonDataAccessService implements PersonDao{
 
         try {
             HttpPost request = new HttpPost("http://localhost:" +
-                    "9002/api/v1/peer/rcvituples");
+                    peerPort+"/api/v1/peer/rcvituples");
             ResponseVRowCol responseVRowCol = new  ResponseVRowCol(userid, rowVs, colVs);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);

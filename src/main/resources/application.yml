@@ -1,8 +1,8 @@
 app:
   datasource:
-    jdbc-url: jdbc:postgresql://localhost:5432/client6
-    username: client6
+    jdbc-url: jdbc:postgresql://localhost:5432/client1
+    username: client1
     password: password
     pool-size: 30
 server:
-  port : 6006
+  port : 6001

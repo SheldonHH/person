@@ -69,6 +69,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import static com.example.demo.dao.PersonDataAccessService.*;
+
 /*
  * Providing a simulation framework for a P4P system. This allows one to debug
  * and benchmark the cryptographic primitives without having to provide other
@@ -78,9 +80,9 @@ import org.apache.http.impl.client.HttpClients;
  */
 
 public class P4PSim extends P4PParameters {
-    private final static String url = "jdbc:postgresql://localhost:5432/client1";
-    private final static String user = "client1";
-    private final static String password = "password";
+//    private final static String url = url;
+//    private final static String user = "client1";
+//    private final static String password = "password";
     public static Connection connect() throws SQLException {
         return DriverManager.getConnection(url, user, password);
     }
@@ -277,7 +279,7 @@ public class P4PSim extends P4PParameters {
                     }
                 }
             }
-            HttpPost request = new HttpPost("http://localhost:9002/api/v1/peer/rowcoltreehashmaps");
+            HttpPost request = new HttpPost("http://localhost:"+peerPort+"/api/v1/peer/rowcoltreehashmaps");
             RowColTreeHMaps rowColTreeMaps = new RowColTreeHMaps(userid, colHashMap,rowHashMap);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -673,7 +675,8 @@ public class P4PSim extends P4PParameters {
                         }
 
 
-                        HttpPost request_viProof = new HttpPost("http://localhost:9002/api/v1/peer/viandproof");
+                        HttpPost request_viProof = new HttpPost("http://localhost:"+peerPort+"/api/v1/peer/viandproof");
+
                         uv.setForServer(false); // since Proof is a self-circuited class
                         System.out.println("peer isForServer: "+serverProof.isForServer());
                         ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof);
@@ -784,7 +787,7 @@ public class P4PSim extends P4PParameters {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
-            HttpPost request_finishVi = new HttpPost("http://localhost:9002/api/v1/peer/finishvi");
+            HttpPost request_finishVi = new HttpPost("http://localhost:"+peerPort+"/api/v1/peer/finishvi");
             StringEntity finishVi_json = null;
             finishVi_json = new StringEntity(mapper.writeValueAsString(new PersonCount(num_of_element, userid)), ContentType.APPLICATION_JSON);
             request_finishVi.setEntity(finishVi_json);
