@@ -29,8 +29,8 @@ import java.util.*;
 
 @Repository("postgres")
 public class PersonDataAccessService implements PersonDao{
-    public static final String url = "jdbc:postgresql://localhost:5432/client1";
-    public static String peerPort = "9001";
+    public static final String url = "jdbc:postgresql://localhost:5432/client6";
+    public static String peerPort = "9002";
     public static final String user = "postgres";
     public static final String password = "password";
     public static UUID userid = null;
