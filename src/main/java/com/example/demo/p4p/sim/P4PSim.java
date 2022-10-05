@@ -40,6 +40,7 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import com.example.demo.dao.PersonDataAccessService;
@@ -178,9 +179,9 @@ public class P4PSim extends P4PParameters {
         }
     }
 
-    public static int insertDiwithUnitRange(String range, long[] di) {
-        String SQL = "INSERT INTO DiUnitRange(unitrange, di) "
-                + "VALUES(?,?)";
+    public static int insertDiwithUnitRange(String range, long[] di, String batch_time) {
+        String SQL = "INSERT INTO DiUnitRange(unitrange, di, created_at, batch_time) "
+                + "VALUES(?,?,NOW(),?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
@@ -191,6 +192,7 @@ public class P4PSim extends P4PParameters {
                     .toArray(String[]::new);
             Array sg = conn.createArrayOf("TEXT", strArray);
             pstmt.setArray (2, sg);
+            pstmt.setString (3, batch_time);
             int affectedRows = pstmt.executeUpdate();
             // check the affected rows
             if (affectedRows > 0) {
@@ -208,7 +210,7 @@ public class P4PSim extends P4PParameters {
         return 0;
     }
 
-    public static void persistHashColRow(ArrayList<List<Long>> allViList, UUID userid){
+    public static void persistHashColRow(ArrayList<List<Long>> allViList, UUID userid, String batch_time){
         int totalLine = allViList.size();
         String curRow = new String(), curCol=new String();
         TreeMap<Integer, String> rowMap = new TreeMap<>();
@@ -240,8 +242,8 @@ public class P4PSim extends P4PParameters {
 
 
         String SQL = "INSERT INTO " +
-                "HashList(hash_id, rowOrCol, index, concatedResult, HashResult, created_at) "
-                + "VALUES(?,?,?,?,?, NOW())";
+                "HashList(hash_id, rowOrCol, index, concatedResult, HashResult, created_at, batch_time) "
+                + "VALUES(?,?,?,?,?,NOW(),?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
@@ -251,6 +253,7 @@ public class P4PSim extends P4PParameters {
                 pstmt.setInt(3, i);
                 pstmt.setString(4, rowMap.get(i));
                 pstmt.setInt(5, rowHashMap.get(i));
+                pstmt.setString(6, batch_time);
                 int affectedRows = pstmt.executeUpdate();
                 // check the affected rows
                 if (affectedRows > 0) {
@@ -268,6 +271,7 @@ public class P4PSim extends P4PParameters {
                 pstmt.setInt(3, i);
                 pstmt.setString(4, colMap.get(i));
                 pstmt.setInt(5, colHashMap.get(i));
+                pstmt.setString(6, batch_time);
                 int affectedRows = pstmt.executeUpdate();
                 // check the affected rows
                 if (affectedRows > 0) {
@@ -280,8 +284,7 @@ public class P4PSim extends P4PParameters {
                 }
             }
             HttpPost request = new HttpPost("http://localhost:"+peerPort+"/api/v1/peer/rowcoltreehashmaps");
-            RowColTreeHMaps rowColTreeMaps = new RowColTreeHMaps(userid, colHashMap,rowHashMap);
-
+            RowColTreeHMaps rowColTreeMaps = new RowColTreeHMaps(userid, colHashMap,rowHashMap, batch_time);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
             StringEntity json = new StringEntity(mapper.writeValueAsString(rowColTreeMaps), ContentType.APPLICATION_JSON);
@@ -307,12 +310,12 @@ public class P4PSim extends P4PParameters {
 
     }
     static ArrayList<List<Long>> allViList = new ArrayList<>();
-    public static int persistViwithColRow(long lineNum, long[] vi, long totalLine){
+    public static int persistViwithColRow(long lineNum, long[] vi, long totalLine, String batch_time){
         List<Long> viList = Arrays.stream(vi)        // IntStream
                 .boxed()          // Stream<Integer>
                 .collect(Collectors.toList());
-        String SQL = "INSERT INTO VHashMatrix(v_id, row, col, vi) "
-                + "VALUES(?,?,?,?)";
+        String SQL = "INSERT INTO VHashMatrix(v_id, row, col, vi, created_at, batch_time) "
+                + "VALUES(?,?,?,?,NOW(),?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
@@ -325,6 +328,7 @@ public class P4PSim extends P4PParameters {
                     .toArray(String[]::new);
             Array sg = conn.createArrayOf("TEXT", strArray);
             pstmt.setArray (4, sg);
+            pstmt.setString(5, batch_time);
             int affectedRows = pstmt.executeUpdate();
             // check the affected rows
             if (affectedRows > 0) {
@@ -405,10 +409,14 @@ public class P4PSim extends P4PParameters {
     static String joint = "/Users/mac/singapore/person1/src/main/python/joint_frequency.py";
     static String gauss = "/Users/mac/singapore/person1/src/main/python/2d.py";
     public static void main(String[] args) throws InterruptedException {
+
         ProcessBuilder pb = new ProcessBuilder("/Users/mac/opt/anaconda3/bin/python3", preprocess, args[0], "python3", joint, "python3", gauss);
 //        pb.directory(new File("/Users/mac/FedBFT/KL_Divergence/"));
+
+
         System.out.println(args[0]);
         UUID userid = UUID.fromString(args[1]);
+        String batch_time = args[2];
         PersonDataAccessService.userid = userid;
         if(args[0].equals("/Users/mac/singapore/person1/src/main/resources/data_sample/user_1_data.csv")){
             System.out.println("yesssss!!!!!~!");
@@ -579,7 +587,7 @@ public class P4PSim extends P4PParameters {
                     }
                 }
                 rangeforX12s.add(rangeforX1+"--"+rangeforX2);
-                insertDiwithUnitRange(rangeforX1+"--"+rangeforX2,data);
+                insertDiwithUnitRange(rangeforX1+"--"+rangeforX2,data, batch_time);
                 System.out.println(data);
 
 //                int[][] c = new int[zkpIterations][];
@@ -660,7 +668,7 @@ public class P4PSim extends P4PParameters {
                         System.out.println("isForServer: "+serverProof.isForServer());
                         UserVector2.L2NormBoundProof2 newServerProof = serverProof;
                         System.out.println("newServerProof.tcProof"+newServerProof.getThreeWayCommitmentProofs());
-                        UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(), newServerProof);
+                        UiandProof uiandProof = new UiandProof(userid, uv.getU(), peerProof.getChecksumRandomness(), newServerProof, batch_time);
 
                         ObjectMapper mapper = new ObjectMapper();
                         mapper.registerSubtypes(ThreeWayCommitment.ThreeWayCommitmentProof.class, Proof.class, BitCommitment.BitCommitmentProof.class, SquareCommitment.SquareCommitmentProof.class);
@@ -679,7 +687,7 @@ public class P4PSim extends P4PParameters {
 
                         uv.setForServer(false); // since Proof is a self-circuited class
                         System.out.println("peer isForServer: "+serverProof.isForServer());
-                        ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof);
+                        ViandProof viandProof = new ViandProof(userid, uv.getV(), peerProof, batch_time);
                         StringEntity vi_json = new StringEntity(mapper.writeValueAsString(viandProof), ContentType.APPLICATION_JSON);
                         request_viProof.setEntity(vi_json);
                         CloseableHttpResponse response_viProof = httpClient.execute(request_viProof);
@@ -689,7 +697,7 @@ public class P4PSim extends P4PParameters {
 
 //  3️⃣. The peer:
                         long[] vv = uv.getV();
-                        persistViwithColRow(lineNum, vv , dataLineNum);
+                        persistViwithColRow(lineNum, vv , dataLineNum, batch_time);
 //  3️⃣.1 The peer: setV(); // 🌛 UserVector2(m, F, l, g, h)
                         UserVector2 pv = new UserVector2(m, F, l, g, h);
                         pv.setV(vv);
@@ -783,13 +791,13 @@ public class P4PSim extends P4PParameters {
             }
             myReader.close();
 
-            persistHashColRow(allViList, userid);
+            persistHashColRow(allViList, userid, batch_time);
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
             HttpPost request_finishVi = new HttpPost("http://localhost:"+peerPort+"/api/v1/peer/finishvi");
             StringEntity finishVi_json = null;
-            finishVi_json = new StringEntity(mapper.writeValueAsString(new PersonCount(num_of_element, userid)), ContentType.APPLICATION_JSON);
+            finishVi_json = new StringEntity(mapper.writeValueAsString(new PersonCount(num_of_element, userid, batch_time)), ContentType.APPLICATION_JSON);
             request_finishVi.setEntity(finishVi_json);
             CloseableHttpResponse response_finishVi = httpClient.execute(request_finishVi);
             if(response_finishVi.getStatusLine().getStatusCode() != 200){

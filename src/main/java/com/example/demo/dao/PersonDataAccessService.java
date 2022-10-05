@@ -29,8 +29,8 @@ import java.util.*;
 
 @Repository("postgres")
 public class PersonDataAccessService implements PersonDao{
-    public static final String url = "jdbc:postgresql://localhost:5432/client6";
-    public static String peerPort = "9002";
+    public static final String url = "jdbc:postgresql://localhost:5432/client1";
+    public static String peerPort = "9001";
     public static final String user = "postgres";
     public static final String password = "password";
     public static UUID userid = null;
@@ -128,7 +128,7 @@ public class PersonDataAccessService implements PersonDao{
         try {
             HttpPost request = new HttpPost("http://localhost:" +
                     peerPort+"/api/v1/peer/rcvituples");
-            ResponseVRowCol responseVRowCol = new  ResponseVRowCol(userid, rowVs, colVs);
+            ResponseVRowCol responseVRowCol = new  ResponseVRowCol(userid, rowVs, colVs, p_vifromSQMatrix.getBatch_time());
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
             StringEntity json = new StringEntity(mapper.writeValueAsString(responseVRowCol), ContentType.APPLICATION_JSON);
@@ -228,11 +228,11 @@ public class PersonDataAccessService implements PersonDao{
     }
 
     @Override
-    public String checkFinal(String uuid_str){
+    public String checkFinal(String uuid_str, String batch_time){
         HttpResponse response;
         String JSONString = "";
         System.out.println("zou, CheckFinal");
-        HttpGet getConnection = new HttpGet("http://localhost:8081/api/v1/server/uuidstr="+uuid_str);
+        HttpGet getConnection = new HttpGet("http://localhost:8081/api/v1/server/uuidstr="+uuid_str+"=");
         try {
             response = httpClient.execute(getConnection);
             JSONString = EntityUtils.toString(response.getEntity(),

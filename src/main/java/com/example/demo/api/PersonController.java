@@ -10,6 +10,7 @@ import uploadingfiles.StorageService;
 
 import javax.validation.Valid;
 import java.sql.*;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -39,35 +40,38 @@ public class PersonController {
         this.personService = personService;
     }
 
-    @GetMapping("/st")
-    @ResponseBody
-    public int stt(){
-//        try {
-        System.out.println("sg");
-//            P4PSim.main(new String[]{"/Users/mac/singapore/person1/src/main/python/data_sample"});
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        return 0;
-    }
+//    @GetMapping("/st")
+//    @ResponseBody
+//    public int stt(){
+////        try {
+//        System.out.println("sg");
+////            P4PSim.main(new String[]{"/Users/mac/singapore/person1/src/main/python/data_sample"});
+////        } catch (InterruptedException e) {
+////            e.printStackTrace();
+////        }
+//        return 0;
+//    }
 
 
     @GetMapping("{datapath}")
 //    @ResponseBody
     public String start(@PathVariable("datapath") String datapath){
         System.out.println(datapath);
+        java.util.Date date = new Date();
+        String batch_time =  new Timestamp(date.getTime()).toString();
+        System.out.println("batch_time in start @GetMapping(\"{datapath}\"):"+batch_time);
 //        System.out.println(uuidstr);
         String correct_data_path = datapath.replace("!","/");
 
         System.out.println(correct_data_path.split("=")[1]);
         System.out.println(correct_data_path.split("=")[3]);
         try {
-            System.out.println("israel");
-            P4PSim.main(new String[]{correct_data_path.split("=")[1],correct_data_path.split("=")[3]});
+            System.out.println("person controller call P4PSim");
+            P4PSim.main(new String[]{correct_data_path.split("=")[1],correct_data_path.split("=")[3], batch_time});
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return personService.checkFinal(correct_data_path.split("=")[3]);
+        return personService.checkFinal(correct_data_path.split("=")[3],batch_time);
     }
 
 
@@ -76,7 +80,7 @@ public class PersonController {
         String raw_data_path = ds.substring(ds.indexOf("\"",8)+1, ds.length()-2);
         System.out.println(raw_data_path);
         try {
-              P4PSim.main(new String[]{raw_data_path});
+                P4PSim.main(new String[]{raw_data_path});
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

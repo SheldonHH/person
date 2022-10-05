@@ -13,14 +13,17 @@ CREATE TABLE V_PERSON_DATA (
                                client_id VARCHAR ( 50 ),
                                vi text[],
                                verified boolean,
-                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                               batch_time VARCHAR ( 50 )
+
 );
 CREATE TABLE person_rc (
                            rc_id UUID PRIMARY KEY,
                            user_id UUID,
                            row integer,
                            col integer,
-                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                           batch_time VARCHAR ( 50 )
 );
 CREATE TABLE PERSON_STATS (
                               user_id UUID PRIMARY KEY,
@@ -53,15 +56,18 @@ CREATE TABLE U_PERSON_DATA (
                                client_id VARCHAR ( 50 ) ,
                                ui text[],
                                verified boolean,
+                               batch_time VARCHAR ( 50 ),
                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE U_PERSON_DATA OWNER TO server1;
+ALTER TABLE U_PERSON_DATA OWNER TO server2;
 DROP TABLE IF EXISTS PERSON_SIGNATURE;
 CREATE TABLE PERSON_SIGNATURE (
-                                  person_id UUID PRIMARY KEY,
+                                  person_id UUID,
                                   client_name VARCHAR ( 50 ),
                                   signature text,
-                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                  batch_time VARCHAR ( 50 ),
+                                  PRIMARY KEY (client_name, batch_time)
 );
 ALTER TABLE PERSON_SIGNATURE OWNER TO server2;
 
@@ -82,19 +88,25 @@ CREATE TABLE VHashMatrix (
                              v_id UUID PRIMARY KEY,
                              row text,
                              col text,
-                             vi text[]
+                             vi text[],
+                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             batch_time VARCHAR ( 50 )
 );
 CREATE TABLE DiUnitRange (
                              d_id serial PRIMARY KEY,
                              unitrange TEXT,
-                             di TEXT[]
+                             di TEXT[],
+                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             batch_time VARCHAR ( 50 )
 );
 CREATE TABLE HashList (
                           hash_id UUID PRIMARY KEY,
                           rowOrCol TEXT,
                           index integer,
                           concatedResult TEXT,
-                          HashResult Integer
+                          HashResult Integer,
+                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          batch_time VARCHAR ( 50 )
 );
 
 ALTER TABLE VHashMatrix OWNER TO client2;

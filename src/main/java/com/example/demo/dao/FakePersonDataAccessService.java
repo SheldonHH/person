@@ -15,7 +15,7 @@ public class FakePersonDataAccessService implements PersonDao{
 
 
     @Override
-    public String checkFinal(String uuid_str){
+    public String checkFinal(String uuid_str, String batch_time){
         return "";
     }
     @Override
