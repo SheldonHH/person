@@ -2,6 +2,7 @@ cd ~/singapore/person1
 mvn package
 cd /Users/mac/singapore/person1/target
 rm -rf client1.jar
+rm -rf client1.log
 mv trainingNode1-v1-SNAPSHOT.jar client1.jar
 # 1. truncate tables and create table to make sure
 # docker exec -w /root/person1/psql_command -it $(docker ps | grep -E 'postgres-spring' | awk '{print $1}') /bin/bash /root/person1/psql_command/truncate_table.sh
