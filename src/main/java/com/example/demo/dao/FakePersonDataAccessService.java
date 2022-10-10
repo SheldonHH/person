@@ -1,5 +1,6 @@
 package com.example.demo.dao;
 
+import com.example.demo.model.RequestUnitRange;
 import com.example.demo.model.vmatrixhash.P_VifromSQMatrix;
 import com.example.demo.model.Person;
 import org.springframework.stereotype.Repository;
@@ -40,7 +41,7 @@ public class FakePersonDataAccessService implements PersonDao{
     }
 
     @Override
-    public int requestSumandCountforUnit(String requestedUnitRange) {
+    public int requestSumandCountforUnit(RequestUnitRange requestedUnitRange) {
         return 0;
     }
 

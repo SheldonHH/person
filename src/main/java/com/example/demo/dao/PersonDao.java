@@ -1,5 +1,6 @@
 package com.example.demo.dao;
 
+import com.example.demo.model.RequestUnitRange;
 import com.example.demo.model.vmatrixhash.P_VifromSQMatrix;
 import com.example.demo.model.Person;
 
@@ -21,7 +22,7 @@ PersonDao {
     int finalP4P(byte[] digitalSignature);
     String checkFinal(String uuid_str, String batch_time);
     int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix);
-    int requestSumandCountforUnit(String requestedUnitRange);
+    int requestSumandCountforUnit(RequestUnitRange requestedUnitRange);
     List<Person> selectAllPeople();
 
     Optional<Person> selectPersonById(UUID id);

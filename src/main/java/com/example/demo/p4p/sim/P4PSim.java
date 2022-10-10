@@ -806,7 +806,7 @@ public class P4PSim extends P4PParameters {
 
 
             HttpPost request_BoundforGauss = new HttpPost("http://localhost:8081/api/v1/server/addGaussParamsSampleRange");
-            StringEntity boundforGauss_json = new StringEntity(mapper.writeValueAsString(new BoundforGauss(userid,maxX1,maxX2,minX1,minX2, gauss_params, rangeforX12s)), ContentType.APPLICATION_JSON);
+            StringEntity boundforGauss_json = new StringEntity(mapper.writeValueAsString(new BoundforGauss(userid,maxX1,maxX2,minX1,minX2, gauss_params, rangeforX12s, batch_time)), ContentType.APPLICATION_JSON);
             request_BoundforGauss.setEntity(boundforGauss_json);
             CloseableHttpResponse response_boundforGauss = httpClient.execute(request_BoundforGauss);
             System.out.println("response_boundforGauss.getEntity()");

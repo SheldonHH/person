@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dao.PersonDao;
+import com.example.demo.model.RequestUnitRange;
 import com.example.demo.model.vmatrixhash.P_VifromSQMatrix;
 import com.example.demo.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class PersonService {
 
     public int finalP4P(byte[] digitalSignature){ return personDao.finalP4P(digitalSignature);}
     public int requestVifromSQMatrix(P_VifromSQMatrix p_vifromSQMatrix) { return personDao.requestVifromSQMatrix(p_vifromSQMatrix);}
-    public int requestSumandCountforUnit(String requestedUnitRange){ return personDao.requestSumandCountforUnit(requestedUnitRange);}
+    public int requestSumandCountforUnit(RequestUnitRange requestedUnitRange){ return personDao.requestSumandCountforUnit(requestedUnitRange);}
     public List<Person> getAllPeople() {
         return personDao.selectAllPeople();
     }

@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.model.RequestUnitRange;
 import com.example.demo.model.vmatrixhash.P_VifromSQMatrix;
 import com.example.demo.model.Person;
 import com.example.demo.p4p.sim.P4PSim;
@@ -99,7 +100,7 @@ public class PersonController {
     }
 
     @PostMapping("/sumCountforUnit") //serverID
-    public void requestSumandCountforUnit(@Valid @NonNull @RequestBody String requestedUnitRange){
+    public void requestSumandCountforUnit(@Valid @NonNull @RequestBody RequestUnitRange requestedUnitRange){
         personService.requestSumandCountforUnit(requestedUnitRange);
     }
 

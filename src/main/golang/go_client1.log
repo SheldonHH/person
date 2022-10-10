@@ -150,3 +150,45 @@ p4p took 376.043µs
 p4p took 562.581µs
 [B@485e046f
 p4p took 461.993µs
+{"timestamp":"2022-10-06T06:01:17.678+00:00","status":500,"error":"Internal Server Error","path":"/api/v1/person/datapath=%21Users%21mac%21singapore%21person1%21src%21main%21python%21data_sample%21small_data.csv=personID=f000aa01-0451-4000-b000-000000000000"}
+p4p took 834.469µs
+{"timestamp":"2022-10-06T06:04:21.803+00:00","status":500,"error":"Internal Server Error","path":"/api/v1/person/datapath=%21Users%21mac%21singapore%21person1%21src%21main%21python%21data_sample%21small_data.csv=personID=f000aa01-0451-4000-b000-000000000000"}
+p4p took 787.857µs
+{"timestamp":"2022-10-06T06:31:25.965+00:00","status":500,"error":"Internal Server Error","path":"/api/v1/person/datapath=%21Users%21mac%21singapore%21person1%21src%21main%21python%21data_sample%21small_data.csv=personID=f000aa01-0451-4000-b000-000000000000"}
+p4p took 477.502µs
+{"timestamp":"2022-10-06T07:08:07.932+00:00","status":500,"error":"Internal Server Error","path":"/api/v1/person/datapath=%21Users%21mac%21singapore%21person1%21src%21main%21python%21data_sample%21small_data.csv=personID=f000aa01-0451-4000-b000-000000000000"}
+p4p took 716.467µs
+{"timestamp":"2022-10-06T07:13:47.528+00:00","status":500,"error":"Internal Server Error","path":"/api/v1/person/datapath=%21Users%21mac%21singapore%21person1%21src%21main%21python%21data_sample%21small_data.csv=personID=f000aa01-0451-4000-b000-000000000000"}
+p4p took 2.244432ms
+{"timestamp":"2022-10-06T07:25:09.958+00:00","status":500,"error":"Internal Server Error","path":"/api/v1/person/datapath=%21Users%21mac%21singapore%21person1%21src%21main%21python%21data_sample%21small_data.csv=personID=f000aa01-0451-4000-b000-000000000000"}
+p4p took 494.157µs
+checkFinal
+p4p took 351.392µs
+checkFinal
+p4p took 598.488µs
+checkFinal
+p4p took 378.145µs
+checkFinal
+p4p took 369.006µs
+checkFinal
+p4p took 377.188µs
+{"timestamp":"2022-10-06T09:13:19.708+00:00","status":500,"error":"Internal Server Error","path":"/api/v1/person/datapath=%21Users%21mac%21singapore%21person1%21src%21main%21python%21data_sample%21small_data.csv=personID=f000aa01-0451-4000-b000-000000000000"}
+p4p took 1.507416ms
+checkFinal
+p4p took 649.364µs
+checkFinal
+p4p took 368.252µs
+checkFinal
+p4p took 484.052µs
+{"timestamp":"2022-10-09T08:19:21.185+00:00","status":500,"error":"Internal Server Error","path":"/api/v1/person/datapath=%21Users%21mac%21singapore%21person1%21src%21main%21python%21data_sample%21small_data.csv=personID=f000aa01-0451-4000-b000-000000000000"}
+p4p took 578.274µs
+checkFinal
+p4p took 403.676µs
+checkFinal
+p4p took 361.398µs
+checkFinal
+p4p took 533.556µs
+checkFinal
+p4p took 387.675µs
+checkFinal
+p4p took 401.986µs

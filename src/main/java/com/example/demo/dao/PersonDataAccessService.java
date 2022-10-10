@@ -29,7 +29,7 @@ import java.util.*;
 
 @Repository("postgres")
 public class PersonDataAccessService implements PersonDao{
-    public static final String url = "jdbc:postgresql://localhost:5432/client1";
+    public static final String url = "jdbc:postgresql://localhost:5432/client2";
     public static String peerPort = "9001";
     public static final String user = "postgres";
     public static final String password = "password";
@@ -89,16 +89,18 @@ public class PersonDataAccessService implements PersonDao{
 
         String rowSQL = "SELECT vi "
                 + "FROM VHashMatrix "
-                + "WHERE row = ? order by col";
+                + "WHERE row = ? and batch_time = ? order by col";
         String colSQL = "SELECT vi "
                 + "FROM VHashMatrix "
-                + "WHERE col = ? order by row";
+                + "WHERE col = ? and batch_time = ? order by row";
         try{
             Connection conn = connect();
             PreparedStatement preparedStatementRow = conn.prepareStatement(rowSQL);
             PreparedStatement preparedStatementCol = conn.prepareStatement(colSQL);
             preparedStatementRow.setString(1, ""+requestRow);
+            preparedStatementRow.setString(2, p_vifromSQMatrix.getBatch_time());
             preparedStatementCol.setString(1, ""+requestCol);
+            preparedStatementCol.setString(2, p_vifromSQMatrix.getBatch_time());
             ResultSet rsRow = preparedStatementRow.executeQuery();
             while(rsRow.next()){
                 ArrayList<String> rowViList = new ArrayList<>( Arrays.asList((String[]) rsRow.getArray("vi").getArray()));
@@ -148,24 +150,31 @@ public class PersonDataAccessService implements PersonDao{
     }
 
     @Override
-    public int requestSumandCountforUnit(String requestedUnitRange) {
+    public int requestSumandCountforUnit(RequestUnitRange requestedUnitRange) {
 //        String SQL = "SELECT distinct di "
 //                + "FROM DiUnitRange "
 //                + "WHERE unitrange = ?;";
         String SQL = "SELECT distinct di "
                 + "FROM DiUnitRange "
-                + "WHERE unitrange=?";
+                + "WHERE unitrange=? and batch_time=?";
         String CountSQL = "SELECT COUNT(DISTINCT di) "
                 + "FROM DiUnitRange "
-                + "WHERE unitrange = ? ";
-        System.out.println("Reach here: "+requestedUnitRange.substring(1,requestedUnitRange.length()-1));
+                + "WHERE unitrange = ? and batch_time=?";
+        String rur = requestedUnitRange.getRequestedUnitRange();
+        String batch_time = requestedUnitRange.getBatch_time();
+        System.out.println("Reach here (requestSumandCountforUnit): "+rur.substring(1,rur.length()-1));
+
+        System.out.println("Reach here (requestSumandCountforUnit) rur: "+rur);
         ArrayList<String> stringList = new ArrayList<String>();
         try{
             Connection conn = connect();
             PreparedStatement preparedStatement = conn.prepareStatement(SQL);
             PreparedStatement preparedStatementCountSQL = conn.prepareStatement(CountSQL);
-            preparedStatement.setString(1, requestedUnitRange.substring(1,requestedUnitRange.length()-1));
-            preparedStatementCountSQL.setString(1, requestedUnitRange.substring(1,requestedUnitRange.length()-1));
+            preparedStatement.setString(1, rur);
+            preparedStatement.setString(2, batch_time);
+            preparedStatementCountSQL.setString(1, rur);
+            preparedStatementCountSQL.setString(2, batch_time);
+
             ResultSet rs = preparedStatement.executeQuery();
 
             ArrayList<ArrayList<Long>> TwoDResultList = new ArrayList<ArrayList<Long>>();
@@ -229,19 +238,38 @@ public class PersonDataAccessService implements PersonDao{
 
     @Override
     public String checkFinal(String uuid_str, String batch_time){
-        HttpResponse response;
-        String JSONString = "";
-        System.out.println("zou, CheckFinal");
-        HttpGet getConnection = new HttpGet("http://localhost:8081/api/v1/server/uuidstr="+uuid_str+"=");
+        System.out.println("zou POST, CheckFinal with uuid+batch_time");
+        HttpPost request = new HttpPost("http://localhost:" + "8081/api/v1/server/check_sig");
+        PersonCount personCount = new PersonCount(-1, UUID.fromString(uuid_str), batch_time);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
+        StringEntity json = null;
         try {
-            response = httpClient.execute(getConnection);
-            JSONString = EntityUtils.toString(response.getEntity(),
-                    "UTF-8");
-//            JSONObject jsonObject = new JSONObject(JSONString); //Assuming it's a JSON Object
-        }catch (IOException e) {
+            json = new StringEntity(mapper.writeValueAsString(personCount), ContentType.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return JSONString;
+        request.setEntity(json);
+        CloseableHttpResponse response = null;
+        try {
+            response = httpClient.execute(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(response.getStatusLine().getStatusCode() != 200){
+            System.out.println("requested rcViTuples not added! "+response.getStatusLine().getStatusCode() );
+        }
+        return "checkFinal";
+//        HttpGet getConnection = new HttpGet("http://localhost:8081/api/v1/server/uuidstr="+uuid_str+"="+batch_time); // server端组合成PersonCount
+//        try {
+//            response = httpClient.execute(getConnection);
+//            JSONString = EntityUtils.toString(response.getEntity(),
+//                    "UTF-8");
+////            JSONObject jsonObject = new JSONObject(JSONString); //Assuming it's a JSON Object
+//        }catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return JSONString;
 //
     }
     @Override
