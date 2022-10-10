@@ -14,6 +14,9 @@ CREATE DATABASE peer1 WITH ENCODING = 'UTF8' OWNER = peer1;
 --- DROP DATABASE if exists peer2;
 CREATE ROLE peer2;
 CREATE DATABASE peer2 WITH ENCODING = 'UTF8' OWNER = peer2;
+--
+CREATE ROLE peer3;
+CREATE DATABASE peer3 WITH ENCODING = 'UTF8' OWNER = peer3;
 
 --- DROP DATABASE if exists client1;
 CREATE ROLE client1;
@@ -44,6 +47,8 @@ ALTER ROLE "server2" WITH LOGIN;
 -- ALTER ROLE "server3" WITH LOGIN;
 ALTER ROLE "peer1" WITH LOGIN;
 ALTER ROLE "peer2" WITH LOGIN;
+ALTER ROLE "peer3" WITH LOGIN;
+--
 ALTER ROLE "client1" WITH LOGIN;
 ALTER ROLE "client2" WITH LOGIN;
 ALTER ROLE "client3" WITH LOGIN;
@@ -56,6 +61,8 @@ ALTER ROLE server2 WITH PASSWORD 'password';
 -- ALTER ROLE server3 WITH PASSWORD 'password';
 ALTER ROLE peer1 WITH PASSWORD 'password';
 ALTER ROLE peer2 WITH PASSWORD 'password';
+ALTER ROLE peer3 WITH PASSWORD 'password';
+--
 ALTER ROLE client1 WITH PASSWORD 'password';
 ALTER ROLE client2 WITH PASSWORD 'password';
 ALTER ROLE client3 WITH PASSWORD 'password';
@@ -135,6 +142,20 @@ CREATE TABLE public.flyway_schema_history (
                                               success boolean NOT NULL
 );
 ALTER TABLE public.flyway_schema_history OWNER TO peer2;
+\c peer3
+CREATE TABLE public.flyway_schema_history (
+                                              installed_rank integer NOT NULL,
+                                              version character varying(50),
+                                              description character varying(200) NOT NULL,
+                                              type character varying(20) NOT NULL,
+                                              script character varying(1000) NOT NULL,
+                                              checksum integer,
+                                              installed_by character varying(100) NOT NULL,
+                                              installed_on timestamp without time zone DEFAULT now() NOT NULL,
+                                              execution_time integer NOT NULL,
+                                              success boolean NOT NULL
+);
+ALTER TABLE public.flyway_schema_history OWNER TO peer3;
 
 
 \c client1

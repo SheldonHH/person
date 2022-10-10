@@ -48,7 +48,7 @@ CREATE TABLE PERSON_STATS (
                               client_name TEXT,
                               count integer,
                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
+                              batch_time VARCHAR ( 50 )
 );
 
 CREATE TABLE HashList (
